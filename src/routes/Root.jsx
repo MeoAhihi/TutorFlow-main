@@ -1,16 +1,33 @@
 import React from "react";
-import { Row, Col, Card, Image, ListGroup, Tab, Button } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Card,
+  Image,
+  ListGroup,
+  Tab,
+  Button,
+  Nav,
+} from "react-bootstrap";
 import { ChevronDown } from "react-bootstrap-icons";
+import { Link, Outlet, useLoaderData } from "react-router-dom";
+import NavItemLink from "../components/NavItemLink";
+
+export async function loader() {
+  return { students: ["Ly Boi San", "Ly Trac Dong", "Ly Uyen My"] };
+}
 
 export default function Root() {
+  const { students } = useLoaderData();
   return (
     <Tab.Container>
       <Row className="g-1 m-1">
-        <Col xs={2}>
-          <div style={{ height: "100vh", overflowY: "scroll" }}>
-            {/* <Card style={{ height: "95vh", fontSize: "0.75rem" }}>
-            <Card.Body className="shadow d-flex flex-column"> */}
-            <Card.Title className="text-center" style={{ fontSize: "2rem" }}>
+        <Col xs={2} className="p-2">
+          <div className="vh-100 overflow-y-scroll">
+            <Card.Title
+              className="text-center mb-2"
+              style={{ fontSize: "2rem" }}
+            >
               <Image
                 src="\src\assets\1Screenshot 2024-09-26 161431.png"
                 width={40}
@@ -19,36 +36,43 @@ export default function Root() {
               />
               TutorFlow
             </Card.Title>
-            <ListGroup variant="flush">
-              <ListGroup.Item action className="border-0" href="/dashboard#">
-                Dashboard
-              </ListGroup.Item>
-              <ListGroup.Item action className="border-0" href="/dashboard#">
+            <Nav variant="pills" className="flex-column">
+              <NavItemLink
+                to="dashboard"
+                eventKey="dashboard"
+                label="Dashboard"
+              />
+              <hr className="my-2" />
+              {["Mathematics", "Chemistry", "Physics"].map((cls) => (
+                <NavItemLink
+                  to={"classes/" + cls}
+                  eventKey={"classes/" + cls}
+                  label={cls}
+                />
+              ))}
+            </Nav>
+            end of nav
+            <ListGroup>
+              <ListGroup.Item action className="border-0">
                 Schedule
               </ListGroup.Item>
               <hr className="my-2" />
-              {["Mathematics", "Chemistry", "Physics"].map((cls) => (
-                <ListGroup.Item
-                  action
-                  className="border-0"
-                  href={"/class/detail#" + cls}
-                >
-                  {cls}
-                </ListGroup.Item>
-              ))}
+              classes
               <Button variant="none" className="">
                 See more <ChevronDown />
               </Button>
               <hr className="my-2" />
-              {["Boi San", "Trac Dong", "Uyen My"].map((cls) => (
-                <ListGroup.Item
-                  action
-                  className="border-0"
-                  href={"/student/info/#" + cls}
-                >
-                  {cls}
-                </ListGroup.Item>
-              ))}
+              {students.length
+                ? students.map((cls) => (
+                    <ListGroup.Item
+                      action
+                      className="border-0"
+                      // href={"/student/info/#" + cls}
+                    >
+                      {cls}
+                    </ListGroup.Item>
+                  ))
+                : "No students"}
               <Button variant="none" className="">
                 See more <ChevronDown />
               </Button>
@@ -65,28 +89,9 @@ export default function Root() {
           </Card> */}
           </div>
         </Col>
-        {/* <Col xs={10}>
-          <Card className="shadow">
-            <Card.Body>
-              <Stack direction="horizontal">
-                <Card.Text className="display-6 fw-bold m-0">
-                  Welcome back, Vi Phong
-                </Card.Text>
-                <Button variant="none" className="ms-auto">
-                  feature 1
-                </Button>
-                <Button variant="none">feature 2</Button>
-                <Button>P</Button>
-              </Stack>
-            </Card.Body>
-          </Card>
-
-          <Card className="shadow mt-2">
-            <Card.Body>
-              <HomeTabContent />
-            </Card.Body>
-          </Card>
-        </Col> */}
+        <Col xs={10}>
+          <Outlet />
+        </Col>
       </Row>
     </Tab.Container>
   );

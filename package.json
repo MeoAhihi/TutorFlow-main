@@ -10,12 +10,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@schedule-x/react": "^2.4.2",
+    "@schedule-x/theme-default": "^2.5.0",
     "bootstrap": "^5.3.3",
+    "draft-js": "^0.11.7",
     "react": "^18.3.1",
+    "react-avatar": "^5.0.3",
     "react-bootstrap": "^2.10.5",
     "react-bootstrap-icons": "^1.11.4",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-draft-wysiwyg": "^1.15.0",
+    "react-router-dom": "^6.28.0",
+    "react-social-login-buttons": "^4.1.0",
+    "reactjs-social-login": "^2.6.3",
+    "recharts": "^2.13.3"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
