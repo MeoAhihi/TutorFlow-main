@@ -50,6 +50,14 @@ export default function Root() {
                   label={cls}
                 />
               ))}
+              <hr className="my-2" />
+              {students.map((std) => (
+                <NavItemLink  
+                  to={"students/" + std}
+                  eventKey={"students/" + std}
+                  label={std}
+                />
+              ))}
             </Nav>
             end of nav
             <ListGroup>
@@ -57,22 +65,7 @@ export default function Root() {
                 Schedule
               </ListGroup.Item>
               <hr className="my-2" />
-              classes
-              <Button variant="none" className="">
-                See more <ChevronDown />
-              </Button>
-              <hr className="my-2" />
-              {students.length
-                ? students.map((cls) => (
-                    <ListGroup.Item
-                      action
-                      className="border-0"
-                      // href={"/student/info/#" + cls}
-                    >
-                      {cls}
-                    </ListGroup.Item>
-                  ))
-                : "No students"}
+              
               <Button variant="none" className="">
                 See more <ChevronDown />
               </Button>
@@ -85,8 +78,6 @@ export default function Root() {
                 Log out
               </ListGroup.Item>
             </ListGroup>
-            {/* </Card.Body>
-          </Card> */}
           </div>
         </Col>
         <Col xs={10}>

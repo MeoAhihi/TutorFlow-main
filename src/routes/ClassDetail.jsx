@@ -1,15 +1,4 @@
-import {
-  Container,
-  Col,
-  Row,
-  Tabs,
-  Tab,
-  Card,
-  Image,
-  Nav,
-} from "react-bootstrap";
-
-import Avatar from "react-avatar";
+import { Row, Tabs, Tab, Card } from "react-bootstrap";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import NotificationTabContent from "../components/NotificationTabContent";
