@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Button, Form, Stack } from "react-bootstrap";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import { GoogleLoginButton } from "react-social-login-buttons";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import FormField from "./FormField";
+import axios from "axios";
 
 export default function SigninForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async () => {
+    // console.log({ email: email });
+    const res = await axios.post("http://localhost:3000/users", {
+      email: email,
+      password: password,
+    });
+    if (res.status === 200) {
+      console.log(res.status === 200)
+      redirect('/classes')
+    }
+  };
+
   return (
     <Form>
       <Stack gap={3}>
@@ -31,10 +47,22 @@ export default function SigninForm() {
         </div>
 
         {/* <!-- Email input --> */}
-        <FormField label={"Email Address"} type={"email"} />
+        <FormField
+          label={"Email Address"}
+          type={"email"}
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+        />
 
         {/* <!-- Password input --> */}
-        <FormField label={"Password"} type={"password"} />
+        <FormField
+          label={"Password"}
+          type={"password"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         <div className="d-flex justify-content-between align-items-center">
           {/* <!-- Checkbox --> */}
@@ -50,7 +78,7 @@ export default function SigninForm() {
           size="lg"
           className="px-5"
           style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
-          onClick={() => {}}
+          onClick={handleSubmit}
         >
           Login
         </Button>

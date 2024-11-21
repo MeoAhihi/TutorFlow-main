@@ -22,8 +22,8 @@ export default function Root() {
   return (
     <Tab.Container>
       <Row className="g-1 m-1">
-        <Col xs={2} className="p-2">
-          <div className="vh-100 overflow-y-scroll">
+        <Col xs={2} className="p-2 ">
+          <div className="vh-100 overflow-y-scroll ">
             <Card.Title
               className="text-center mb-2"
               style={{ fontSize: "2rem" }}
@@ -38,7 +38,7 @@ export default function Root() {
             </Card.Title>
             <Nav variant="pills" className="flex-column">
               <NavItemLink
-                to="dashboard"
+                to=""
                 eventKey="dashboard"
                 label="Dashboard"
               />

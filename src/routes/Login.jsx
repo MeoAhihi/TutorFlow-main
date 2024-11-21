@@ -2,8 +2,16 @@ import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Copyright from "../components/Copyright";
 import SigninForm from "../components/SigninForm";
+import { useActionData } from "react-router-dom";
+
+async function action({request}) {
+  let formData = await request.formData()
+  console.log(formData)
+
+}
 
 export default function Login() {
+  const res = useActionData()
   return (
     <section className="d-flex flex-column vh-100">
       <Container fluid className="flex-grow-1">
