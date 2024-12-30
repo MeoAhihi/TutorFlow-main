@@ -3,8 +3,10 @@ import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { Card, Table, Row, Col, Button } from "react-bootstrap";
 import { ChevronUp, ChevronDown } from "react-bootstrap-icons";
+import { useLoaderData } from "react-router-dom";
 
 export default function NotificationTabContent() {
+  const { name, createdAt, subject, description, type } = useLoaderData();
   const [showInfo, setShowInfo] = useState(false);
   const toggleShowInfo = () => setShowInfo(!showInfo);
   const [editorState, setEditorState] = useState(() =>
@@ -26,7 +28,7 @@ export default function NotificationTabContent() {
           />
           <Card.Body>
             <Card.Title className="d-flex justify-content-between">
-              <div>Advance Vector Calculus</div>
+              <div>{name}</div>
               <Button onClick={toggleShowInfo} variant="light">
                 {showInfo ? <ChevronDown /> : <ChevronUp />}
               </Button>
@@ -35,24 +37,19 @@ export default function NotificationTabContent() {
               <Table>
                 <tr>
                   <th width="20%">Created at</th>
-                  <td>18/10/2024 15:44:56</td>
+                  <td>{createdAt}</td>
                 </tr>
                 <tr>
                   <th>Subject</th>
-                  <td>Mathematics</td>
+                  <td>{subject}</td>
                 </tr>
                 <tr>
                   <th>Description</th>
-                  <td>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Dolorum consectetur quidem ipsam, non quibusdam omnis
-                    laboriosam porro cumque nemo consequatur ipsum quis sapiente
-                    illum nesciunt esse vel rem, fugiat ea?
-                  </td>
+                  <td>{description}</td>
                 </tr>
                 <tr>
                   <th>Type</th>
-                  <td>Offline</td>
+                  <td>{type}</td>
                 </tr>
               </Table>
             )}

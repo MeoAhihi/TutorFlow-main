@@ -4,24 +4,43 @@ import { useCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
 import { createViewWeek } from "@schedule-x/calendar";
 
 import "@schedule-x/theme-default/dist/index.css";
+import { useLoaderData } from "react-router-dom";
 
 const defaultFn = (e) => console.log(e.target.value);
 
 export default function ScheduleTabContent() {
-  const [classes, setClasses] = useState([
-    {
-      id: 1,
-      title: "Day 1",
-    },
-    {
-      id: 2,
-      title: "Day 2",
-    },
-    {
-      id: 3,
-      title: "Day 3",
-    },
-  ]);
+  const { weeklySchedule, classInfo } = useLoaderData();
+  console.log(
+    "schedule",
+    weeklySchedule.result
+      .filter((schedule) => schedule.classId === classInfo.id)
+      .map((c, i) => {
+        const date = new Date(c.date);
+        return {
+          id: i,
+          title: "Day " + (i + 1),
+          start: new Date(c.date + " " + c.startTime)
+            .toLocaleString("en-GB", {
+              timeZone: "UTC",
+            })
+            .replace(", ", " ")
+            .replaceAll("/", "-")
+            .substring(0, 16),
+          end: new Date(c.date + " " + c.endTime)
+            .toLocaleString("en-GB", {
+              timeZone: "UTC",
+            })
+            .replace(", ", " ")
+            .replaceAll("/", "-")
+            .substring(0, 16),
+        };
+      })
+  );
+  const [classes, setClasses] = useState(
+    weeklySchedule.result.filter(
+      (schedule) => schedule.classId === classInfo.id
+    )
+  );
 
   const handleChangeDay = (newDay) =>
     setClasses(
@@ -57,22 +76,10 @@ export default function ScheduleTabContent() {
     views: [createViewWeek()],
     events: [
       {
-        id: 1,
-        title: "Day 1",
-        start: "2024-10-29 12:13",
-        end: "2024-10-29 14:13",
-      },
-      {
         id: 2,
-        title: "Day 2",
-        start: "2024-10-29 17:13",
-        end: "2024-10-29 18:13",
-      },
-      {
-        id: 3,
         title: "Day 3",
-        start: "2024-11-01 12:13",
-        end: "2024-11-01 12:19",
+        start: "23-12-2024 12:30",
+        end: "23-12-2024 14:00",
       },
     ],
     dayBoundaries: {
@@ -89,16 +96,7 @@ export default function ScheduleTabContent() {
       <Col xs={10}>
         {JSON.stringify(classes)}
         <hr />
-        {JSON.stringify(
-          classes.map((c) => {
-            return {
-              id: c.id,
-              title: c.title,
-              start: c.day + " " + c.start,
-              end: c.day + " " + c.end,
-            };
-          })
-        )}
+        {}
         <Form>
           {[1, 2, 3].map((i) => (
             <Row key={i} className="mb-4">

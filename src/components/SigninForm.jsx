@@ -3,23 +3,23 @@ import React, { useState } from "react";
 import { Button, Form, Stack } from "react-bootstrap";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import { GoogleLoginButton } from "react-social-login-buttons";
-import { Link, redirect } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FormField from "./FormField";
 import axios from "axios";
 
 export default function SigninForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    // console.log({ email: email });
-    const res = await axios.post("http://localhost:3000/users", {
+    const res = await axios.post("http://localhost:3000/api/v1/auth/login", {
       email: email,
       password: password,
     });
     if (res.status === 200) {
-      console.log(res.status === 200)
-      redirect('/classes')
+      localStorage.setItem("jwt", res.data.accessToken);
+      navigate("/");
     }
   };
 

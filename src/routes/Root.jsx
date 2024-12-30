@@ -10,15 +10,24 @@ import {
   Nav,
 } from "react-bootstrap";
 import { ChevronDown } from "react-bootstrap-icons";
-import { Link, Outlet, useLoaderData } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  redirect,
+  useLoaderData,
+  useNavigate,
+} from "react-router-dom";
 import NavItemLink from "../components/NavItemLink";
 
-export async function loader() {
-  return { students: ["Ly Boi San", "Ly Trac Dong", "Ly Uyen My"] };
-}
-
 export default function Root() {
-  const { students } = useLoaderData();
+  const { students, classes } = useLoaderData();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    navigate("/login");
+  };
+
   return (
     <Tab.Container>
       <Row className="g-1 m-1">
@@ -37,35 +46,35 @@ export default function Root() {
               TutorFlow
             </Card.Title>
             <Nav variant="pills" className="flex-column">
-              <NavItemLink
-                to=""
-                eventKey="dashboard"
-                label="Dashboard"
-              />
+              <NavItemLink to="" eventKey="dashboard" label="Dashboard" />
               <hr className="my-2" />
-              {["Mathematics", "Chemistry", "Physics"].map((cls) => (
+              <Card.Text>Classes</Card.Text>
+              {classes.map((cls) => (
                 <NavItemLink
-                  to={"classes/" + cls}
-                  eventKey={"classes/" + cls}
-                  label={cls}
+                  key={cls.id}
+                  to={"classes/" + cls.id}
+                  eventKey={"classes/" + cls.id}
+                  label={cls.name}
                 />
               ))}
               <hr className="my-2" />
-              {students.map((std) => (
-                <NavItemLink  
-                  to={"students/" + std}
-                  eventKey={"students/" + std}
-                  label={std}
+
+              <Card.Text>Students</Card.Text>
+              {students.map(({ id, name }) => (
+                <NavItemLink
+                  key={id}
+                  to={"students/" + id}
+                  eventKey={"students/" + id}
+                  label={name}
                 />
               ))}
             </Nav>
-            end of nav
             <ListGroup>
               <ListGroup.Item action className="border-0">
                 Schedule
               </ListGroup.Item>
               <hr className="my-2" />
-              
+
               <Button variant="none" className="">
                 See more <ChevronDown />
               </Button>
@@ -74,7 +83,11 @@ export default function Root() {
               <ListGroup.Item action className="border-0">
                 Setting
               </ListGroup.Item>
-              <ListGroup.Item action className="border-0">
+              <ListGroup.Item
+                action
+                className="border-0"
+                onClick={handleLogout}
+              >
                 Log out
               </ListGroup.Item>
             </ListGroup>

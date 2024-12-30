@@ -9,8 +9,8 @@ export default function AssignmentTabContent() {
         <Button>
           <PlusCircle /> Create
         </Button>
-        {[1, 2, 3].map(() => (
-          <Card className="my-3">
+        {[1, 2, 3].map((i) => (
+          <Card className="my-3" key={i}>
             <Card.Header className="d-flex justify-content-between">
               <Card.Title>Title</Card.Title>
               <Card.Text>Due on 31/10/2024</Card.Text>
@@ -28,8 +28,8 @@ export default function AssignmentTabContent() {
                 quam, iure ab asperiores alias.
               </Card.Text>
               <Row>
-                {[1, 2].map(() => (
-                  <Col xs={3}>
+                {[1, 2].map((i) => (
+                  <Col xs={3} key={i}>
                     <Card className="p-0 mb-2 d-flex flex-row">
                       <Image
                         src="\1Screenshot 2024-09-26 161431.png"

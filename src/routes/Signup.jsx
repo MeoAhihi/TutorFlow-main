@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Container,
@@ -15,10 +15,32 @@ import {
   LockFill,
   KeyFill,
 } from "react-bootstrap-icons";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+
 import FormField from "../components/FormField";
-import { Link } from "react-router-dom";
 
 export default function Signup() {
+  const navigate = useNavigate();
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [repeatPassword, setRepeatPassword] = useState();
+
+  const handleSubmit = async () => {
+    const res = await axios.post("http://localhost:3000/api/v1/auth/register", {
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+    });
+
+    if (res.status === 201) {
+      localStorage.setItem("jwt", res.data.accessToken);
+      navigate("/");
+    }
+  };
   return (
     <section className="d-flex flex-column vh-100">
       <Container fluid className="flex-grow-1">
@@ -32,26 +54,51 @@ export default function Signup() {
               <Stack gap={3} bsPrefix="vstack">
                 <FormField
                   Icon={PersonFill}
-                  label={"Your Name"}
+                  label={"First Name"}
                   type={"text"}
+                  value={firstName}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                  }}
+                />
+                <FormField
+                  Icon={PersonFill}
+                  label={"Last Name"}
+                  type={"text"}
+                  value={lastName}
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                  }}
                 />
 
                 <FormField
                   Icon={EnvelopeFill}
                   label={"Your Email"}
                   type={"text"}
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
                 />
 
                 <FormField
                   Icon={LockFill}
                   label={"Password"}
                   type={"password"}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                 />
 
                 <FormField
                   Icon={KeyFill}
                   label={"Repeat Your Password"}
                   type={"password"}
+                  value={repeatPassword}
+                  onChange={(e) => {
+                    setRepeatPassword(e.target.value);
+                  }}
                 />
 
                 <Form.Check type="checkbox" className="align-self-center">
@@ -61,7 +108,7 @@ export default function Signup() {
                   </Form.Check.Label>
                 </Form.Check>
 
-                <Button variation="primary" size="lg">
+                <Button onClick={handleSubmit} variation="primary" size="lg">
                   Register
                 </Button>
                 <p className="small fw-bold mt-2 pt-1 mb-0">

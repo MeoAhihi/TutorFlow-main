@@ -1,9 +1,10 @@
 import React from "react";
 import { Card, Col, Container, Nav, Row } from "react-bootstrap";
+import { Outlet } from "react-router-dom";
+
 import UsernameCard from "../components/UsernameCard";
 import ParentInfoCard from "../components/ParentInfoCard";
 import NavItemLink from "../components/NavItemLink";
-import { Outlet } from "react-router-dom";
 
 export default function StudentProfile() {
   return (

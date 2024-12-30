@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, Image, Row, Stack, Table } from "react-bootstrap";
 import { CheckSquare } from "react-bootstrap-icons";
+import { useLoaderData } from "react-router-dom";
 import {
   LineChart,
   Line,
@@ -11,6 +12,31 @@ import {
   ResponsiveContainer,
 } from "recharts";
 export default function StudentTabContent() {
+  const { students, attendances } = useLoaderData();
+  const attendedStudents = students.map((student) => {
+    const attendedSessionIds = attendances.map((session) =>
+      session.StudentProfiles.map((profile) => profile.id).includes(
+        student.profile.id
+      )
+    );
+    const attendanceCount = attendedSessionIds.reduce(
+      (accumulator, attendance) => accumulator + attendance,
+      0
+    );
+    const totalSessions = attendedSessionIds.length;
+    return {
+      id: student.profile.id,
+      name: student.student.firstName + " " + student.student.lastName,
+      attendedSessionIds,
+      attendanceCount,
+      totalSessions,
+      percentage: (totalSessions === 0
+        ? 0
+        : (attendanceCount * 100) / totalSessions
+      ).toFixed(0),
+    };
+  });
+
   return (
     <Row className="justify-content-center">
       <Col xs={10}>
@@ -20,229 +46,49 @@ export default function StudentTabContent() {
             <tr>
               <th>id</th>
               <th>Student</th>
-              <th>22/6</th>
-              <th>29/6</th>
-              <th>6/7</th>
-              <th>13/7</th>
-              <th>20/7</th>
-              <th>27/7</th>
-              <th>3/8</th>
-              <th>10/8</th>
-              <th>17/8</th>
-              <th>24/8</th>
-              <th>31/8</th>
-              <th>7/9</th>
-              <th>14/9</th>
-              <th>21/9</th>
-              <th>28/9</th>
-              <th>5/10</th>
-              <th>12/10</th>
-              <th>19/10</th>
+              {attendances.map((session) => {
+                const datetime = new Date(session.createdAt);
+                const date = datetime.getDate();
+                const month = datetime.getMonth() + 1;
+                return (
+                  <th key={session.id}>
+                    {date}/{month}
+                  </th>
+                );
+              })}
               <th>Total</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td className="d-flex align-items-center">
-                <Image
-                  roundedCircle
-                  src="https://png.pngtree.com/png-vector/20200425/ourmid/pngtree-single-person-character-in-vector-png-image_2194492.jpg"
-                  width={30}
-                  className="mx-2"
-                />
-                <p className="m-0">Student 1</p>
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td className="d-flex align-items-center">
-                <Image
-                  roundedCircle
-                  src="https://png.pngtree.com/png-vector/20200425/ourmid/pngtree-single-person-character-in-vector-png-image_2194492.jpg"
-                  width={30}
-                  className="mx-2"
-                />
-                <p className="m-0">Student 2</p>
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td className="d-flex align-items-center">
-                <Image
-                  roundedCircle
-                  src="https://png.pngtree.com/png-vector/20200425/ourmid/pngtree-single-person-character-in-vector-png-image_2194492.jpg"
-                  width={30}
-                  className="mx-2"
-                />
-                <p className="m-0">Student 3</p>
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>
-                <CheckSquare />
-              </td>
-              <td>3</td>
-            </tr>
+            {attendedStudents.map((student, i) => {
+              return (
+                <tr key={student.id}>
+                  <td>{i + 1}</td>
+                  <td className="d-flex align-items-center">
+                    <Image
+                      roundedCircle
+                      src="https://png.pngtree.com/png-vector/20200425/ourmid/pngtree-single-person-character-in-vector-png-image_2194492.jpg"
+                      width={30}
+                      className="mx-2"
+                    />
+                    <p className="m-0">{student.name}</p>
+                  </td>
+                  {student.attendedSessionIds.map((isAttended, i) =>
+                    isAttended ? (
+                      <td key={i}>
+                        <CheckSquare />
+                      </td>
+                    ) : (
+                      <td key={i}></td>
+                    )
+                  )}
+                  <td>
+                    {student.attendanceCount}/{student.totalSessions} (
+                    {student.percentage}%)
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </Table>
         <div className="mb-4" />
