@@ -87,7 +87,6 @@ function App() {
           loader: () => {
             const jwt = localStorage.getItem("jwt");
             const tutorInfo = decodeToken(jwt);
-            console.log(tutorInfo);
             return {
               tutorName:
                 (tutorInfo.firstName ?? "") + " " + (tutorInfo.lastName ?? ""),
@@ -99,9 +98,12 @@ function App() {
         {
           path: "classes/:classId",
           element: <ClassDetail />,
+          // loader: ({ params }) => {
+          //   return redirect("/classes/" + params.classId + "/overview");
+          // },
           children: [
             {
-              path: "notification",
+              path: "overview",
               loader: async ({ params }) => {
                 const jwt = localStorage.getItem("jwt");
                 const classInfo = await axios.get(
@@ -114,11 +116,11 @@ function App() {
                 );
 
                 return {
-                  name: classInfo.name,
-                  createdAt: Date(classInfo.createdAt),
-                  description: classInfo.description,
-                  subject: classInfo.subject,
-                  type: classInfo.type,
+                  name: classInfo.data.class.name,
+                  createdAt: Date(classInfo.data.class.createdAt),
+                  description: classInfo.data.class.description,
+                  subject: classInfo.data.class.subject,
+                  type: classInfo.data.class.type,
                 };
               },
               element: <NotificationTabContent />,
@@ -156,6 +158,30 @@ function App() {
               path: "schedule",
               loader: async ({ params }) => {
                 const jwt = localStorage.getItem("jwt");
+
+                const day2Date = (day) => {
+                  const day2Index = {
+                    mon: 1,
+                    tue: 2,
+                    wed: 3,
+                    thu: 4,
+                    fri: 5,
+                    sat: 6,
+                    sun: 7,
+                  };
+                  const d = new Date(),
+                    today = d.getDay(),
+                    year = d.getFullYear(),
+                    monthIndex = d.getMonth(),
+                    date = d.getDate();
+
+                  return new Date(
+                    year,
+                    monthIndex,
+                    date - today + day2Index[day]
+                  );
+                };
+
                 const classInfo = await axios.get(
                   "http://localhost:3000/api/v1/classes/" + params.classId,
                   {
@@ -164,8 +190,18 @@ function App() {
                     },
                   }
                 );
-                const weeklySchedule = await axios.get(
-                  "http://localhost:3000/api/v1/schedules/current-week",
+                const defaultSchedules = await axios.get(
+                  "http://localhost:3000/api/v1/schedules/default?classId=" +
+                    params.classId,
+                  {
+                    headers: {
+                      Authorization: "Bearer " + jwt,
+                    },
+                  }
+                );
+                const offsetSchedule = await axios.get(
+                  "http://localhost:3000/api/v1/schedules/offset?classId=" +
+                    params.classId,
                   {
                     headers: {
                       Authorization: "Bearer " + jwt,
@@ -173,14 +209,37 @@ function App() {
                   }
                 );
                 return {
+                  startDate: day2Date("mon"),
+                  endDate: day2Date("sun"),
                   classInfo: classInfo.data.class,
-                  weeklySchedule: weeklySchedule.data,
+                  defaultSchedules: defaultSchedules.data.DefaultSchedules.map(
+                    ({ id, day, startTime, endTime }) => ({
+                      id,
+                      startTime,
+                      endTime,
+                      date: day2Date(day),
+                    })
+                  ),
+                  offsetSchedules: offsetSchedule.data.OffsetSchedules,
                 };
               },
               element: <ScheduleTabContent />,
             },
             {
               path: "assignment",
+              loader: async ({ params }) => {
+                const jwt = localStorage.getItem("jwt");
+                const assignments = await axios.get(
+                  "http://localhost:3000/api/v1/assignemnt?classId=" +
+                    params.classId,
+                  {
+                    headers: {
+                      Authorization: "Bearer " + jwt,
+                    },
+                  }
+                );
+                return { assignments };
+              },
               element: <AssignmentTabContent />,
             },
             {
@@ -204,9 +263,33 @@ function App() {
                     },
                   }
                 );
+                const current = new Date();
+                const startThisMonth = new Date(
+                  current.getFullYear(),
+                  current.getMonth(),
+                  1
+                );
+                const startLastMonth = new Date(
+                  current.getFullYear(),
+                  current.getMonth() - 1,
+                  1
+                );
                 return {
                   students: classInfo.data.students,
                   sessions: sessions.data.Sessions,
+                  thisMonthSessions: sessions.data.Sessions.filter(
+                    (session) => startThisMonth < new Date(session.createdAt)
+                  ),
+                  lastMonthSessions: sessions.data.Sessions.filter(
+                    (session) =>
+                      startLastMonth < new Date(session.createdAt) &&
+                      new Date(session.createdAt) < startThisMonth
+                  ),
+                  earlierSessions: sessions.data.Sessions.filter(
+                    (session) =>
+                      startLastMonth < new Date(session.createdAt) &&
+                      new Date(session.createdAt) < startLastMonth
+                  ),
                 };
               },
               element: <SessionTabContent />,

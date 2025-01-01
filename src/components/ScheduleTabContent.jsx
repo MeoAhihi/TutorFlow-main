@@ -2,45 +2,33 @@ import React, { useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { useCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
 import { createViewWeek } from "@schedule-x/calendar";
-
-import "@schedule-x/theme-default/dist/index.css";
 import { useLoaderData } from "react-router-dom";
 
-const defaultFn = (e) => console.log(e.target.value);
+import "@schedule-x/theme-default/dist/index.css";
+
+const to2digits = (number) => ("0" + number).slice(-2);
+const toEventDate = (date) =>
+  `${date.getFullYear()}-${to2digits(date.getMonth() + 1)}-${to2digits(
+    date.getDate()
+  )}`;
+const toEventTime = (time) =>
+  `${to2digits(date.getHours())}:${to2digits(date.getMinutes())}`;
 
 export default function ScheduleTabContent() {
-  const { weeklySchedule, classInfo } = useLoaderData();
+  const { defaultSchedules, offsetSchedules, classInfo, startDate, endDate } =
+    useLoaderData();
   console.log(
-    "schedule",
-    weeklySchedule.result
-      .filter((schedule) => schedule.classId === classInfo.id)
-      .map((c, i) => {
-        const date = new Date(c.date);
-        return {
-          id: i,
-          title: "Day " + (i + 1),
-          start: new Date(c.date + " " + c.startTime)
-            .toLocaleString("en-GB", {
-              timeZone: "UTC",
-            })
-            .replace(", ", " ")
-            .replaceAll("/", "-")
-            .substring(0, 16),
-          end: new Date(c.date + " " + c.endTime)
-            .toLocaleString("en-GB", {
-              timeZone: "UTC",
-            })
-            .replace(", ", " ")
-            .replaceAll("/", "-")
-            .substring(0, 16),
-        };
-      })
+    "default",
+    defaultSchedules
+      .toSorted((ds1, ds2) => ds1.date - ds2.date)
+      .map(({ id, startTime, endTime, date }, i) => ({
+        id,
+        title: "Day " + (i + 1),
+        start: toEventDate(date) + " " + startTime,
+        end: toEventDate(date) + " " + endTime,
+      }))
   );
-  const [classes, setClasses] = useState(
-    weeklySchedule.result.filter(
-      (schedule) => schedule.classId === classInfo.id
-    )
-  );
+  const [classes, setClasses] = useState();
 
   const handleChangeDay = (newDay) =>
     setClasses(
@@ -74,14 +62,14 @@ export default function ScheduleTabContent() {
 
   const calendar = useCalendarApp({
     views: [createViewWeek()],
-    events: [
-      {
-        id: 2,
-        title: "Day 3",
-        start: "23-12-2024 12:30",
-        end: "23-12-2024 14:00",
-      },
-    ],
+    events: defaultSchedules
+      .toSorted((ds1, ds2) => ds1.date - ds2.date)
+      .map(({ id, startTime, endTime, date }, i) => ({
+        id,
+        title: "Day " + (i + 1),
+        start: toEventDate(date) + " " + startTime,
+        end: toEventDate(date) + " " + endTime,
+      })),
     dayBoundaries: {
       start: "06:00",
       end: "22:00",
@@ -89,6 +77,8 @@ export default function ScheduleTabContent() {
     weekOptions: {
       gridHeight: 800,
     },
+    minDate: toEventDate(startDate),
+    maxDate: toEventDate(endDate),
   });
 
   return (

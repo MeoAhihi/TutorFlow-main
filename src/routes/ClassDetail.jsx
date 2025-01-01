@@ -9,11 +9,7 @@ export default function ClassDetail() {
     <Card borser="light" className="shadow-sm">
       <Card.Body className="p-4">
         <Nav variant="tabs" defaultActiveKey="overview" className="mb-4">
-          <NavItemLink
-            to="notification"
-            eventKey="notification"
-            label="Notification"
-          />
+          <NavItemLink to="overview" eventKey="overview" label="Overview" />
           <NavItemLink to="student" eventKey="student" label="Student" />
           <NavItemLink to="schedule" eventKey="schedule" label="Schedule" />
           <NavItemLink
