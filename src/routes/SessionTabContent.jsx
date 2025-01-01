@@ -1,5 +1,4 @@
-import React from "react";
-import { Table, Image } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 
 export default function SessionTabContent() {
   return (
@@ -14,13 +13,13 @@ export default function SessionTabContent() {
             <th>Emotion</th>
             <th>Motivation</th>
           </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <div className="p-0 text-center">09/10/2024</div>
-                      <div className="p-0 text-center">16:07:02</div>
-                  </tr>
-              </tbody>
+        </thead>
+        <tbody>
+          <tr>
+            <div className="p-0 text-center">09/10/2024</div>
+            <div className="p-0 text-center">16:07:02</div>
+          </tr>
+        </tbody>
       </Table>
     </>
   );

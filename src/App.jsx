@@ -1,11 +1,12 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import {
   createBrowserRouter,
   redirect,
   RouterProvider,
 } from "react-router-dom";
+import axios from "axios";
+import { decodeToken, isExpired } from "react-jwt";
 
-import Root from "./routes/root";
+import Root from "./routes/Root";
 import Error from "./pages/Error";
 import Dashboard from "./routes/Dashboard";
 import Login from "./routes/Login";
@@ -16,13 +17,13 @@ import OverviewTabContent from "./routes/OverviewTabContent";
 import ProgressTabContent from "./routes/ProgressTabContent";
 import AcademicTabContent from "./routes/AcademicTabContent";
 import FeedbackTabContent from "./routes/FeedbackTabContent";
-import axios from "axios";
-import { decodeToken, isExpired } from "react-jwt";
 import NotificationTabContent from "./components/NotificationTabContent";
 import StudentTabContent from "./components/StudentTabContent";
 import ScheduleTabContent from "./components/ScheduleTabContent";
 import AssignmentTabContent from "./components/AssignmentTabContent";
 import SessionTabContent from "./components/SessionTabContent";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const router = createBrowserRouter([

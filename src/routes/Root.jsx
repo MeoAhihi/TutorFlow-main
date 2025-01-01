@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Row,
   Col,
@@ -10,13 +9,7 @@ import {
   Nav,
 } from "react-bootstrap";
 import { ChevronDown } from "react-bootstrap-icons";
-import {
-  Link,
-  Outlet,
-  redirect,
-  useLoaderData,
-  useNavigate,
-} from "react-router-dom";
+import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
 import NavItemLink from "../components/NavItemLink";
 
 export default function Root() {
@@ -38,7 +31,7 @@ export default function Root() {
               style={{ fontSize: "2rem" }}
             >
               <Image
-                src="\src\assets\1Screenshot 2024-09-26 161431.png"
+                src="/public/assets/1Screenshot 2024-09-26 161431.png"
                 width={40}
                 className="me-2"
                 rounded

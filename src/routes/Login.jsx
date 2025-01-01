@@ -1,4 +1,3 @@
-import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Copyright from "../components/Copyright";
 import SigninForm from "../components/SigninForm";

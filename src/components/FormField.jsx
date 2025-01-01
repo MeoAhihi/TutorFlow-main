@@ -1,4 +1,3 @@
-import React from "react";
 import { FloatingLabel, FormControl } from "react-bootstrap";
 
 export default function FormField({ Icon, label, type, value, onChange }) {

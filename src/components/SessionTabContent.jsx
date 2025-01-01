@@ -1,7 +1,7 @@
-import React from "react";
 import Avatar from "react-avatar";
-import { Card, Row, Col, Image } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import { useLoaderData } from "react-router-dom";
+
 function toTime(ms) {
   const s = Math.floor(ms / 1000) - 31;
   const seconds = ("0" + (s % 60)).slice(-2);
@@ -65,7 +65,7 @@ const SessionCard = ({ session, students }) => (
   <Col xs={3} key={session.id}>
     <Card>
       <Card.Body>
-        <Card.Img src="\education-material-icon-vector-illustration_1287271-41250.avif" />
+        <Card.Img src="/public/assets/education-material-icon-vector-illustration_1287271-41250.avif" />
         <Card.Title className="mb-1">{session.title}</Card.Title>
         <div className="d-flex justify-content-between">
           <Card.Text className="text-muted font-weight-lighter small">

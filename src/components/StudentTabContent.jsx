@@ -1,5 +1,4 @@
-import React from "react";
-import { Col, Image, Row, Stack, Table } from "react-bootstrap";
+import { Col, Image, Row, Table } from "react-bootstrap";
 import { CheckSquare } from "react-bootstrap-icons";
 import { useLoaderData } from "react-router-dom";
 import {
@@ -11,6 +10,7 @@ import {
   YAxis,
   ResponsiveContainer,
 } from "recharts";
+
 export default function StudentTabContent() {
   const { students, attendances } = useLoaderData();
   const attendedStudents = students.map((student) => {
