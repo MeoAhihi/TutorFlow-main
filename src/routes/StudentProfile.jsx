@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Col, Container, Nav, Row } from "react-bootstrap";
 import { Outlet, useLoaderData } from "react-router-dom";
 

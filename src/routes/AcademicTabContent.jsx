@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { PencilSquare } from "react-bootstrap-icons";
-import { useLoaderData } from "react-router-dom";
 import {
   LineChart,
   Tooltip,

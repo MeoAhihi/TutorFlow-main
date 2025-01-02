@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Image, Modal, Button } from "react-bootstrap";
+import { useState } from "react";
+import { Image, Modal } from "react-bootstrap";
 
 export default function Feedback({
   feedbackType,

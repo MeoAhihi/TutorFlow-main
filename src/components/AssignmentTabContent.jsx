@@ -1,4 +1,3 @@
-import React from "react";
 import { Col, Row, Button, Card, Image } from "react-bootstrap";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useLoaderData } from "react-router-dom";

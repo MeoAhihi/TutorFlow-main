@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { EditorState, convertToRaw } from "draft-js";
+import { useState } from "react";
+import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { Card, Table, Row, Col, Button } from "react-bootstrap";
 import { ChevronUp, ChevronDown } from "react-bootstrap-icons";
@@ -20,7 +20,7 @@ export default function NotificationTabContent() {
       <Col xs={10}>
         <Card className="mb-4">
           <Card.Img
-            src="/books-bookstore-book-reading-159711.jpeg"
+            src="/public/assets/books-bookstore-book-reading-159711.jpeg"
             style={{
               height: "12rem",
               objectFit: "cover",
