@@ -1,27 +1,24 @@
 import React from "react";
 import { Col } from "react-bootstrap";
+import { useLoaderData } from "react-router-dom";
 export default function OverviewTabContent() {
+  const { student, profile } = useLoaderData();
+  console.log("OverviewTabContent", student, profile);
   return (
     <>
       <h5 className="mb-3">Biography</h5>
-      <p className="lead mb-3">
-        Ethan Leo is a seasoned and results-driven Project Manager who brings
-        experience and expertise to project management. With a proven track
-        record of successfully delivering complex projects on time and within
-        budget, Ethan Leo is the go-to professional for organizations seeking
-        efficient and effective project leadership.
-      </p>
+      <p className="lead mb-3">{student.biography}</p>
       <h5 className="mb-3">Basic Information</h5>
       <div className="row g-0 mb-3">
-        <TabularRow field="First Name" value="Ethan" />
-        <TabularRow field="Last Name" value="Leo" />
-        <TabularRow field="Address" value="Mountain View, California" />
-        <TabularRow field="Country" value="Vietnam" />
-        <TabularRow field="Phone" value="+1 (248) 679-8745" />
-        <TabularRow field="Email" value="leo@example.com" />
+        <TabularRow field="First Name" value={student.firstName} />
+        <TabularRow field="Last Name" value={student.lastName} />
+        <TabularRow field="Address" value={student.address} />
+        <TabularRow field="Country" value={student.country} />
+        <TabularRow field="Phone" value={student.phoneNumber} />
+        <TabularRow field="Email" value={student.email} />
       </div>
 
-      <h5 className="mb-3">Professional Information</h5>
+      {/* <h5 className="mb-3">Professional Information</h5>
       <div className="row g-0">
         <TabularRow field="Education" value="M.S Computer Science" />
         <TabularRow field="Subject of Specialized" value="Mathematics" />
@@ -29,7 +26,7 @@ export default function OverviewTabContent() {
           field="Grade Levels Taught"
           value="Middle school, High school"
         />
-      </div>
+      </div> */}
     </>
   );
 }

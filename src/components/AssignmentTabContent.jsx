@@ -12,19 +12,14 @@ export default function AssignmentTabContent() {
         <Button>
           <PlusCircle /> Create
         </Button>
-        {[1, 2, 3].map((i) => (
+        {assignments.map((assignment) => (
           <AssignmentCard
-            key={i}
-            title={"Title"}
-            dueDate={new Date()}
-            postDate={new Date("2024-10-30")}
-            description={
-              "Lorem ipsum dolor sit amet consectetur, adipisicing elit. " +
-              "Consequatur nam reprehenderit amet quis error temporibus " +
-              "debitis quae delectus corrupti ullam? Soluta explicabo totam " +
-              "fuga eos quam, iure ab asperiores alias."
-            }
-            files={[1, 2]}
+            key={assignment.id}
+            title={assignment.title}
+            dueDate={assignment.dueDate ? new Date(assignment.dueDate) : null}
+            postDate={new Date(assignment.createdAt)}
+            description={assignment.content}
+            files={JSON.parse(assignment.attachedFiles)}
           />
         ))}
       </Col>
@@ -51,22 +46,27 @@ const AssignmentCard = ({ title, dueDate, postDate, description, files }) => (
   <Card className="my-3">
     <Card.Header className="d-flex justify-content-between">
       <Card.Title>{title}</Card.Title>
-      <Card.Text>Due on {dueDate.toISOString().substring(0, 10)}</Card.Text>
+
+      <Card.Text>
+        {dueDate ? "Due on " + dueDate.toISOString().substring(0, 10) : ""}
+      </Card.Text>
     </Card.Header>
     <Card.Body>
       <Card.Text style={{ fontSize: "smaller", color: "#555", margin: 0 }}>
         Posted on {postDate.toISOString().substring(0, 10)}
       </Card.Text>
-      <Card.Text>{description}</Card.Text>
+      <Card.Text dangerouslySetInnerHTML={{ __html: description }}></Card.Text>
       <Row>
-        {files.map((i) => (
-          <AssignmentFile
-            key={i}
-            fileName={"File name"}
-            fileType={"File type"}
-            fileThumbnailUrl={"/1Screenshot 2024-09-26 161431.png"}
-          />
-        ))}
+        {files
+          ? files.map(({ name, type, thumbnailUrl }, i) => (
+              <AssignmentFile
+                key={i}
+                fileName={name}
+                fileType={type}
+                fileThumbnailUrl={thumbnailUrl}
+              />
+            ))
+          : null}
       </Row>
     </Card.Body>
   </Card>

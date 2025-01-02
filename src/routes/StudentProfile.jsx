@@ -1,12 +1,13 @@
 import React from "react";
 import { Card, Col, Container, Nav, Row } from "react-bootstrap";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLoaderData } from "react-router-dom";
 
 import UsernameCard from "../components/UsernameCard";
 import ParentInfoCard from "../components/ParentInfoCard";
 import NavItemLink from "../components/NavItemLink";
 
 export default function StudentProfile() {
+  const { student, profile } = useLoaderData();
   return (
     <section className="bg-light py-3 py-md-5 py-xl-8">
       <Container>
@@ -36,7 +37,7 @@ export default function StudentProfile() {
                     label="Feedback"
                   />
                 </Nav>
-                <Outlet />
+                <Outlet student={student} profile={profile} />
               </Card.Body>
             </Card>
           </Col>
@@ -44,24 +45,26 @@ export default function StudentProfile() {
             <Row className="gy-4">
               <Col xs={12}>
                 <UsernameCard
-                  avatarUrl="https://img.freepik.com/free-psd/flat-man-character_23-2151534209.jpg"
-                  firstName="Wind"
-                  lastName="Li"
-                  birthday="28/04/2003"
-                  gradeLevel="3rd Year University"
-                  phoneNumber="(+84)35607205"
-                  email="viphongly2804@gmail.com"
-                  address="112 Tùng Thiện Vương, P11, Q8"
+                  avatarUrl={student.avatarUrl}
+                  firstName={student.firstName}
+                  lastName={student.lastName}
+                  birthday={student.birthday}
+                  gradeLevel={profile.gradeLevel}
+                  phoneNumber={student.phoneNumber}
+                  email={student.email}
+                  address={student.address}
                   classes={["UniMath", "IELTS"]}
                 />
               </Col>
 
               <Col xs={12}>
                 <ParentInfoCard
-                  fullName="Li Hue Hung"
-                  phoneNumber="(+84)903688818"
-                  email=""
-                  expectation="I can see progess in my son Math skill. It would be great if he can do it faster"
+                  fullName={
+                    profile.parentFirstName + " " + profile.parentLastName
+                  }
+                  phoneNumber={profile.parentPhoneNumber}
+                  email={profile.parentEmail}
+                  expectation={profile.parentExpectation}
                 />
               </Col>
             </Row>

@@ -5,7 +5,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import Root from "./routes/root";
+import Root from "./routes/Root";
 import Error from "./pages/Error";
 import Dashboard from "./routes/Dashboard";
 import Login from "./routes/Login";
@@ -69,10 +69,10 @@ function App() {
             },
           }
         );
-
+        console.log(students);
         return {
           students: students.data.student.map((student) => ({
-            id: student.User.id,
+            id: student.id,
             name: student.User.firstName + " " + student.User.lastName,
           })),
           classes: classes.data.classes.map((classInfo) => ({
@@ -230,7 +230,7 @@ function App() {
               loader: async ({ params }) => {
                 const jwt = localStorage.getItem("jwt");
                 const assignments = await axios.get(
-                  "http://localhost:3000/api/v1/assignemnt?classId=" +
+                  "http://localhost:3000/api/v1/assignments?classId=" +
                     params.classId,
                   {
                     headers: {
@@ -238,7 +238,7 @@ function App() {
                     },
                   }
                 );
-                return { assignments };
+                return { assignments: assignments.data.Assignments };
               },
               element: <AssignmentTabContent />,
             },
@@ -307,10 +307,40 @@ function App() {
         },
         {
           path: "students/:studentId",
+          loader: async ({ params }) => {
+            const jwt = localStorage.getItem("jwt");
+            const student = await axios.get(
+              "http://localhost:3000/api/v1/students/" + params.studentId,
+              {
+                headers: {
+                  Authorization: "Bearer " + jwt,
+                },
+              }
+            );
+            return {
+              student: student.data.student,
+              profile: student.data.profile,
+            };
+          },
           element: <StudentProfile />,
           children: [
             {
               index: true,
+              loader: async ({ params }) => {
+                const jwt = localStorage.getItem("jwt");
+                const student = await axios.get(
+                  "http://localhost:3000/api/v1/students/" + params.studentId,
+                  {
+                    headers: {
+                      Authorization: "Bearer " + jwt,
+                    },
+                  }
+                );
+                return {
+                  student: student.data.student,
+                  profile: student.data.profile,
+                };
+              },
               element: <OverviewTabContent />,
             },
             {
@@ -319,6 +349,21 @@ function App() {
             },
             {
               path: "academic",
+              loader: async ({ params }) => {
+                const jwt = localStorage.getItem("jwt");
+                const student = await axios.get(
+                  "http://localhost:3000/api/v1/students/" + params.studentId,
+                  {
+                    headers: {
+                      Authorization: "Bearer " + jwt,
+                    },
+                  }
+                );
+                return {
+                  student: student.data.student,
+                  profile: student.data.profile,
+                };
+              },
               element: <AcademicTabContent />,
             },
             {

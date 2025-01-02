@@ -21,6 +21,7 @@ import NavItemLink from "../components/NavItemLink";
 
 export default function Root() {
   const { students, classes } = useLoaderData();
+  console.log(students);
   const navigate = useNavigate();
 
   const handleLogout = () => {

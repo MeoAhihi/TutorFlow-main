@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { PencilSquare } from "react-bootstrap-icons";
+import { useLoaderData } from "react-router-dom";
 import {
   LineChart,
   Tooltip,
@@ -12,6 +13,7 @@ import {
 } from "recharts";
 
 export default function AcademicTabContent() {
+  const { student, profile } = useLoaderData();
   const [modalShow, setModalShow] = useState(false);
   return (
     <>
@@ -50,29 +52,20 @@ export default function AcademicTabContent() {
       </div>
       <Table responsive striped hover>
         <tbody>
-          <EditableRow
-            title="Strength"
-            initValue="Lorem ipsum dolor sit amet."
-          />
-          <EditableRow
-            title="Challanges"
-            initValue="Lorem ipsum dolor sit amet."
-          />
-          <EditableRow
-            title="Learning Goal"
-            initValue="Lorem ipsum dolor sit amet consectetur adipisicing."
-          />
+          <EditableRow title="Strength" initValue={profile.strength} />
+          <EditableRow title="Challanges" initValue={profile.challanges} />
+          <EditableRow title="Learning Goal" initValue={profile.learningGoal} />
           <EditableRow
             title="Prefered Learning Method"
-            initValue="Lorem ipsum dolor sit amet."
+            initValue={profile.preferedLearningMethod}
           />
           <EditableRow
             title="Engagement Style"
-            initValue="Lorem ipsum dolor sit amet."
+            initValue={profile.engagementStyle}
           />
           <EditableRow
             title="Study Habit"
-            initValue="Lorem ipsum dolor sit amet."
+            initValue={profile.studyHabit}
           />
         </tbody>
       </Table>
