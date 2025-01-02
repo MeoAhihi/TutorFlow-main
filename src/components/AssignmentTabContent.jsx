@@ -1,4 +1,3 @@
-import React from "react";
 import { Col, Row, Button, Card, Image } from "react-bootstrap";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useLoaderData } from "react-router-dom";
@@ -64,7 +63,9 @@ const AssignmentCard = ({ title, dueDate, postDate, description, files }) => (
             key={i}
             fileName={"File name"}
             fileType={"File type"}
-            fileThumbnailUrl={"/1Screenshot 2024-09-26 161431.png"}
+            fileThumbnailUrl={
+              "/public/assets/1Screenshot 2024-09-26 161431.png"
+            }
           />
         ))}
       </Row>

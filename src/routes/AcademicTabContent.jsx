@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
-import { PencilSquare } from "react-bootstrap-icons";
+import { useState } from "react";
+import { Table, Form } from "react-bootstrap";
 import {
   LineChart,
   Tooltip,

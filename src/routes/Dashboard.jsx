@@ -1,4 +1,3 @@
-import React from "react";
 import Avatar from "react-avatar";
 import { Card, Button, Stack } from "react-bootstrap";
 import { useLoaderData } from "react-router-dom";
