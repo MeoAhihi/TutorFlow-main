@@ -1,4 +1,4 @@
-import restConnector from "/src/connectors/AxiosRestConnector";
+import restConnector from "../connectors/AxiosRestConnector";
 
 export const getStudents = async () => {
   const res = await restConnector().get("/students");

@@ -1,17 +1,14 @@
-import { Redirect, Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const { jwt } = useAuth(); // Access JWT from AuthContext
+const ProtectedRoute = ({ children }) => {
+  const { jwt } = useAuth();
 
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        jwt ? <Component {...props} /> : <Redirect to="/login" />
-      }
-    />
-  );
+  if (!jwt) {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

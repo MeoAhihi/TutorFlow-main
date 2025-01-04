@@ -1,4 +1,4 @@
-import restConnector from "/src/connectors/AxiosRestConnector";
+import restConnector from "../connectors/AxiosRestConnector";
 
 export const login = async (email, password) => {
   const res = await restConnector().post("/auth/login", {

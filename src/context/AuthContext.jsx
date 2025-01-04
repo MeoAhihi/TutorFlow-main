@@ -1,34 +1,28 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { isExpired } from "react-jwt";
-import { useNavigate } from "react-router-dom";
+
+import { ACCESS_TOKEN } from "../constants/connector";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [jwt, setJwt] = useState(null);
-  const navigate = useNavigate();
+  const [jwt, setJwt] = useState(() => {
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    return token && !isExpired(token) ? token : null;
+  });
 
-  useEffect(() => {
-    const token = localStorage.getItem("jwt"); // Retrieve JWT from local storage
-    if (token) {
-      if (isExpired(token)) {
-        logout();
-      } else {
-        setJwt(token);
-      }
-    } else {
-      navigate("/login"); // Redirect to login if no token
-    }
-  }, [navigate]);
+  const storeAccessToken = (token) => {
+    localStorage.setItem(ACCESS_TOKEN, token);
+    setJwt(token);
+  };
 
-  const logout = () => {
+  const clearUserSession = () => {
+    localStorage.removeItem(ACCESS_TOKEN);
     setJwt(null);
-    localStorage.removeItem("jwt");
-    navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ jwt, setJwt, logout }}>
+    <AuthContext.Provider value={{ jwt, storeAccessToken, clearUserSession }}>
       {children}
     </AuthContext.Provider>
   );

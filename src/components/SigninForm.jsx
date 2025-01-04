@@ -4,23 +4,25 @@ import { Link, useNavigate } from "react-router-dom";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
 
-import { login } from "../api/auth.api";
 import FormField from "./FormField";
+import { login } from "../api/auth.api";
+import { useAuth } from "../context/AuthContext";
 
 export default function SigninForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { storeAccessToken } = useAuth();
 
   const handleSubmit = async () => {
     try {
-      const data = await login(email, password);
-      if (data.status === 200) {
-        localStorage.setItem("jwt", data.accessToken);
+      const { data } = await login(email, password);
+      if (data?.accessToken) {
+        storeAccessToken(data.accessToken);
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

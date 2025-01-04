@@ -3,8 +3,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import Error from "./components/pages/Error";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Error from "./components/pages/Error";
 import AcademicTabContent from "./routes/AcademicTabContent";
 import AssignmentTabContent from "./routes/AssignmentTabContent";
 import ClassDetail from "./routes/ClassDetail";
@@ -32,8 +32,8 @@ import {
 } from "./api/classes.api";
 import { getStudentInfo, getStudents } from "./api/students.api";
 import { DRIVE_EMBED_URL } from "./constants/common";
-import { AuthProvider } from "./context/AuthContext";
 import { day2Date } from "./utils/formatDate";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   const router = createBrowserRouter([
@@ -47,7 +47,11 @@ function App() {
     },
     {
       path: "/",
-      element: <ProtectedRoute component={Root} />,
+      element: (
+        <ProtectedRoute>
+          <Root />
+        </ProtectedRoute>
+      ),
       errorElement: <Error />,
       loader: async () => {
         try {
@@ -79,11 +83,11 @@ function App() {
               avatarUrl: tutorInfo.avatarUrl ?? "",
             };
           },
-          element: <ProtectedRoute component={Dashboard} />,
+          element: <Dashboard />,
         },
         {
           path: "classes/:classId",
-          element: <ProtectedRoute component={ClassDetail} />,
+          element: <ClassDetail />,
           children: [
             {
               path: "overview",
@@ -101,7 +105,7 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <ProtectedRoute component={NotificationTabContent} />,
+              element: <NotificationTabContent />,
             },
             {
               path: "student",
@@ -117,7 +121,7 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <ProtectedRoute component={StudentTabContent} />,
+              element: <StudentTabContent />,
             },
             {
               path: "schedule",
@@ -149,7 +153,7 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <ProtectedRoute component={ScheduleTabContent} />,
+              element: <ScheduleTabContent />,
             },
             {
               path: "assignment",
@@ -161,7 +165,7 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <ProtectedRoute component={AssignmentTabContent} />,
+              element: <AssignmentTabContent />,
             },
             {
               path: "session",
@@ -202,14 +206,12 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <ProtectedRoute component={SessionTabContent} />,
+              element: <SessionTabContent />,
             },
             {
               path: "resource",
               element: (
-                <ProtectedRoute>
-                  <iframe src={DRIVE_EMBED_URL} className="w-100 vh-100" />
-                </ProtectedRoute>
+                <iframe src={DRIVE_EMBED_URL} className="w-100 vh-100" />
               ),
             },
           ],
@@ -228,7 +230,7 @@ function App() {
               console.log(error);
             }
           },
-          element: <ProtectedRoute component={StudentProfile} />,
+          element: <StudentProfile />,
           children: [
             {
               index: true,
@@ -244,11 +246,11 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <ProtectedRoute component={OverviewTabContent} />,
+              element: <OverviewTabContent />,
             },
             {
               path: "progress",
-              element: <ProtectedRoute component={ProgressTabContent} />,
+              element: <ProgressTabContent />,
             },
             {
               path: "academic",
@@ -264,11 +266,11 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <ProtectedRoute component={AcademicTabContent} />,
+              element: <AcademicTabContent />,
             },
             {
               path: "feedback",
-              element: <ProtectedRoute component={FeedbackTabContent} />,
+              element: <FeedbackTabContent />,
             },
           ],
         },
