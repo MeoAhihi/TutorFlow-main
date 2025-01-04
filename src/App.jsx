@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import Error from "./components/pages/Error";
+import ProtectedRoute from "./components/ProtectedRoute";
 import AcademicTabContent from "./routes/AcademicTabContent";
 import AssignmentTabContent from "./routes/AssignmentTabContent";
 import ClassDetail from "./routes/ClassDetail";
@@ -30,7 +31,6 @@ import {
   getSessions,
 } from "./api/classes.api";
 import { getStudentInfo, getStudents } from "./api/students.api";
-import ProtectedRoute from "./components/ProtectedRoute";
 import { DRIVE_EMBED_URL } from "./constants/common";
 import { AuthProvider } from "./context/AuthContext";
 import { day2Date } from "./utils/formatDate";
