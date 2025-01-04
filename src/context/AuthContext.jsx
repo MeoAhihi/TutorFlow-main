@@ -6,24 +6,16 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [jwt, setJwt] = useState(null);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("jwt"); // Retrieve JWT from local storage
     if (token) {
-      isExpired(token)
-        .then((isValid) => {
-          if (isValid) {
-            setJwt(token);
-          } else {
-            navigate("/login"); // Redirect if JWT is invalid
-          }
-        })
-        .catch((error) => {
-          setError(error);
-          navigate("/login"); // Redirect to login if error occurs
-        });
+      if (isExpired(token)) {
+        navigate("/login"); // Redirect if JWT is expired
+      } else {
+        setJwt(token);
+      }
     } else {
       navigate("/login"); // Redirect to login if no token
     }
@@ -36,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ jwt, setJwt, logout, error }}>
+    <AuthContext.Provider value={{ jwt, setJwt, logout }}>
       {children}
     </AuthContext.Provider>
   );

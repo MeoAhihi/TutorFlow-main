@@ -30,6 +30,7 @@ import {
   getSessions,
 } from "./api/classes.api";
 import { getStudentInfo, getStudents } from "./api/students.api";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { DRIVE_EMBED_URL } from "./constants/common";
 import { AuthProvider } from "./context/AuthContext";
 import { day2Date } from "./utils/formatDate";
@@ -46,7 +47,7 @@ function App() {
     },
     {
       path: "/",
-      element: <Root />,
+      element: <ProtectedRoute component={Root} />,
       errorElement: <Error />,
       loader: async () => {
         try {
@@ -78,11 +79,11 @@ function App() {
               avatarUrl: tutorInfo.avatarUrl ?? "",
             };
           },
-          element: <Dashboard />,
+          element: <ProtectedRoute component={Dashboard} />,
         },
         {
           path: "classes/:classId",
-          element: <ClassDetail />,
+          element: <ProtectedRoute component={ClassDetail} />,
           children: [
             {
               path: "overview",
@@ -100,7 +101,7 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <NotificationTabContent />,
+              element: <ProtectedRoute component={NotificationTabContent} />,
             },
             {
               path: "student",
@@ -116,7 +117,7 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <StudentTabContent />,
+              element: <ProtectedRoute component={StudentTabContent} />,
             },
             {
               path: "schedule",
@@ -148,7 +149,7 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <ScheduleTabContent />,
+              element: <ProtectedRoute component={ScheduleTabContent} />,
             },
             {
               path: "assignment",
@@ -160,7 +161,7 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <AssignmentTabContent />,
+              element: <ProtectedRoute component={AssignmentTabContent} />,
             },
             {
               path: "session",
@@ -201,12 +202,14 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <SessionTabContent />,
+              element: <ProtectedRoute component={SessionTabContent} />,
             },
             {
               path: "resource",
               element: (
-                <iframe src={DRIVE_EMBED_URL} className="w-100 vh-100" />
+                <ProtectedRoute>
+                  <iframe src={DRIVE_EMBED_URL} className="w-100 vh-100" />
+                </ProtectedRoute>
               ),
             },
           ],
@@ -225,7 +228,7 @@ function App() {
               console.log(error);
             }
           },
-          element: <StudentProfile />,
+          element: <ProtectedRoute component={StudentProfile} />,
           children: [
             {
               index: true,
@@ -241,11 +244,11 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <OverviewTabContent />,
+              element: <ProtectedRoute component={OverviewTabContent} />,
             },
             {
               path: "progress",
-              element: <ProgressTabContent />,
+              element: <ProtectedRoute component={ProgressTabContent} />,
             },
             {
               path: "academic",
@@ -261,11 +264,11 @@ function App() {
                   console.log(error);
                 }
               },
-              element: <AcademicTabContent />,
+              element: <ProtectedRoute component={AcademicTabContent} />,
             },
             {
               path: "feedback",
-              element: <FeedbackTabContent />,
+              element: <ProtectedRoute component={FeedbackTabContent} />,
             },
           ],
         },

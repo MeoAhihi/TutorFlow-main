@@ -1,4 +1,3 @@
-// src/components/ProtectedRoute.jsx
 import { Redirect, Route } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
