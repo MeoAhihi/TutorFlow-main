@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("jwt"); // Retrieve JWT from local storage
     if (token) {
       if (isExpired(token)) {
-        navigate("/login"); // Redirect if JWT is expired
+        logout();
       } else {
         setJwt(token);
       }
