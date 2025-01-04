@@ -1,10 +1,10 @@
-import axios from "axios";
 import { useState } from "react";
 import { Button, Form, Stack } from "react-bootstrap";
-import { LoginSocialGoogle } from "reactjs-social-login";
-import { GoogleLoginButton } from "react-social-login-buttons";
 import { Link, useNavigate } from "react-router-dom";
+import { GoogleLoginButton } from "react-social-login-buttons";
+import { LoginSocialGoogle } from "reactjs-social-login";
 
+import { login } from "../api/auth.api";
 import FormField from "./FormField";
 
 export default function SigninForm() {
@@ -13,13 +13,14 @@ export default function SigninForm() {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    const res = await axios.post("http://localhost:3000/api/v1/auth/login", {
-      email: email,
-      password: password,
-    });
-    if (res.status === 200) {
-      localStorage.setItem("jwt", res.data.accessToken);
-      navigate("/");
+    try {
+      const data = await login(email, password);
+      if (data.status === 200) {
+        localStorage.setItem("jwt", data.accessToken);
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -83,7 +84,7 @@ export default function SigninForm() {
           Login
         </Button>
         <p className="small fw-bold mt-2 pt-1 mb-0">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link to="/signup" className="link-danger">
             Register
           </Link>

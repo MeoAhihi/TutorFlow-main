@@ -1,12 +1,12 @@
 import {
-  Row,
-  Col,
+  Button,
   Card,
+  Col,
   Image,
   ListGroup,
-  Tab,
-  Button,
   Nav,
+  Row,
+  Tab,
 } from "react-bootstrap";
 import { ChevronDown } from "react-bootstrap-icons";
 import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
@@ -14,7 +14,6 @@ import NavItemLink from "../components/NavItemLink";
 
 export default function Root() {
   const { students, classes } = useLoaderData();
-  console.log(students);
   const navigate = useNavigate();
 
   const handleLogout = () => {

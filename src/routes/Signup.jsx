@@ -1,23 +1,23 @@
 import { useState } from "react";
 
 import {
-  Container,
-  Row,
-  Col,
-  Image,
-  Form,
   Button,
+  Col,
+  Container,
+  Form,
+  Image,
+  Row,
   Stack,
 } from "react-bootstrap";
 import {
-  PersonFill,
   EnvelopeFill,
-  LockFill,
   KeyFill,
+  LockFill,
+  PersonFill,
 } from "react-bootstrap-icons";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
+import { register } from "../api/auth.api";
 import FormField from "../components/FormField";
 
 export default function Signup() {
@@ -29,12 +29,7 @@ export default function Signup() {
   const [repeatPassword, setRepeatPassword] = useState();
 
   const handleSubmit = async () => {
-    const res = await axios.post("http://localhost:3000/api/v1/auth/register", {
-      email: email,
-      password: password,
-      firstName: firstName,
-      lastName: lastName,
-    });
+    const res = await register(email, password, firstName, lastName);
 
     if (res.status === 201) {
       localStorage.setItem("jwt", res.data.accessToken);

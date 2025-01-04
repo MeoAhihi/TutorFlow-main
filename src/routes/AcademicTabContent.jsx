@@ -62,10 +62,7 @@ export default function AcademicTabContent() {
             title="Engagement Style"
             initValue={profile.engagementStyle}
           />
-          <EditableRow
-            title="Study Habit"
-            initValue={profile.studyHabit}
-          />
+          <EditableRow title="Study Habit" initValue={profile.studyHabit} />
         </tbody>
       </Table>
     </>
