@@ -1,24 +1,25 @@
 import { useState } from "react";
 
 import {
-  Container,
-  Row,
-  Col,
-  Image,
-  Form,
   Button,
+  Col,
+  Container,
+  Form,
+  Image,
+  Row,
   Stack,
 } from "react-bootstrap";
 import {
-  PersonFill,
   EnvelopeFill,
-  LockFill,
   KeyFill,
+  LockFill,
+  PersonFill,
 } from "react-bootstrap-icons";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
+import { register } from "../api/auth.api";
 import FormField from "../components/FormField";
+import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -28,19 +29,20 @@ export default function Signup() {
   const [password, setPassword] = useState();
   const [repeatPassword, setRepeatPassword] = useState();
 
-  const handleSubmit = async () => {
-    const res = await axios.post("http://localhost:3000/api/v1/auth/register", {
-      email: email,
-      password: password,
-      firstName: firstName,
-      lastName: lastName,
-    });
+  const { storeAccessToken } = useAuth();
 
-    if (res.status === 201) {
-      localStorage.setItem("jwt", res.data.accessToken);
-      navigate("/");
+  const handleSubmit = async () => {
+    try {
+      const { data } = await register(email, password, firstName, lastName);
+      if (data?.accessToken) {
+        storeAccessToken(data.accessToken);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
+
   return (
     <section className="d-flex flex-column vh-100">
       <Container fluid className="flex-grow-1">

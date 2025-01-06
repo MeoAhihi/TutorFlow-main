@@ -1,25 +1,24 @@
 import {
-  Row,
-  Col,
+  Button,
   Card,
+  Col,
   Image,
   ListGroup,
-  Tab,
-  Button,
   Nav,
+  Row,
+  Tab,
 } from "react-bootstrap";
 import { ChevronDown } from "react-bootstrap-icons";
-import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
+import { Outlet, useLoaderData } from "react-router-dom";
 import NavItemLink from "../components/NavItemLink";
+import { useAuth } from "../context/AuthContext";
 
 export default function Root() {
   const { students, classes } = useLoaderData();
-  console.log(students);
-  const navigate = useNavigate();
+  const { clearUserSession } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    navigate("/login");
+    clearUserSession();
   };
 
   return (

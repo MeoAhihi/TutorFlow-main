@@ -1,86 +1,75 @@
-import {
-  createBrowserRouter,
-  redirect,
-  RouterProvider,
-} from "react-router-dom";
-import axios from "axios";
-import { decodeToken, isExpired } from "react-jwt";
-
-import Root from "./routes/Root";
-import Error from "./pages/Error";
-import Dashboard from "./routes/Dashboard";
-import Login from "./routes/Login";
-import Signup from "./routes/Signup";
-import ClassDetail from "./routes/ClassDetail";
-import StudentProfile from "./routes/StudentProfile";
-import OverviewTabContent from "./routes/OverviewTabContent";
-import ProgressTabContent from "./routes/ProgressTabContent";
-import AcademicTabContent from "./routes/AcademicTabContent";
-import FeedbackTabContent from "./routes/FeedbackTabContent";
-import NotificationTabContent from "./components/NotificationTabContent";
-import StudentTabContent from "./components/StudentTabContent";
-import ScheduleTabContent from "./components/ScheduleTabContent";
-import AssignmentTabContent from "./components/AssignmentTabContent";
-import SessionTabContent from "./components/SessionTabContent";
+import { decodeToken } from "react-jwt";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import Error from "./components/pages/Error";
+import AcademicTabContent from "./routes/AcademicTabContent";
+import AssignmentTabContent from "./routes/AssignmentTabContent";
+import ClassDetail from "./routes/ClassDetail";
+import Dashboard from "./routes/Dashboard";
+import FeedbackTabContent from "./routes/FeedbackTabContent";
+import Login from "./routes/Login";
+import NotificationTabContent from "./routes/NotificationTabContent";
+import OverviewTabContent from "./routes/OverviewTabContent";
+import ProgressTabContent from "./routes/ProgressTabContent";
+import Root from "./routes/Root";
+import ScheduleTabContent from "./routes/ScheduleTabContent";
+import SessionTabContent from "./routes/SessionTabContent";
+import Signup from "./routes/Signup";
+import StudentProfile from "./routes/StudentProfile";
+import StudentTabContent from "./routes/StudentTabContent";
+
+import {
+  getAssignments,
+  getAttendances,
+  getClasses,
+  getClassId,
+  getSchedulesDefault,
+  getSchedulesOffset,
+  getSessions,
+} from "./api/classes.api";
+import { getStudentInfo, getStudents } from "./api/students.api";
+import { DRIVE_EMBED_URL } from "./constants/common";
+import { day2Date } from "./utils/formatDate";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/login",
-      loader: () => {
-        const jwt = localStorage.getItem("jwt");
-        if (isExpired(jwt)) localStorage.removeItem("jwt");
-        if (jwt) return redirect("/");
-        return null;
-      },
       element: <Login />,
     },
     {
       path: "/signup",
-      loader: () => {
-        const jwt = localStorage.getItem("jwt");
-        if (jwt) return redirect("/");
-        return null;
-      },
       element: <Signup />,
     },
     {
       path: "/",
-      element: <Root />,
+      element: (
+        <ProtectedRoute>
+          <Root />
+        </ProtectedRoute>
+      ),
       errorElement: <Error />,
       loader: async () => {
-        const jwt = localStorage.getItem("jwt");
-        if (isExpired(jwt)) localStorage.removeItem("jwt");
-        if (!jwt) return redirect("/login");
-        const students = await axios.get(
-          "http://localhost:3000/api/v1/students",
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("jwt"),
-            },
-          }
-        );
-        const classes = await axios.get(
-          "http://localhost:3000/api/v1/classes",
-          {
-            headers: {
-              Authorization: "Bearer " + jwt,
-            },
-          }
-        );
-        console.log(students);
-        return {
-          students: students.data.student.map((student) => ({
-            id: student.id,
-            name: student.User.firstName + " " + student.User.lastName,
-          })),
-          classes: classes.data.classes.map((classInfo) => ({
-            id: classInfo.id,
-            name: classInfo.name,
-          })),
-        };
+        try {
+          const students = await getStudents();
+          const classes = await getClasses();
+          return {
+            students: students.data.student.map((student) => ({
+              id: student.id,
+              name: student.User.firstName + " " + student.User.lastName,
+            })),
+            classes: classes.data.classes.map((classInfo) => ({
+              id: classInfo.id,
+              name: classInfo.name,
+            })),
+          };
+        } catch (error) {
+          console.log(error);
+        }
       },
       children: [
         {
@@ -99,209 +88,130 @@ function App() {
         {
           path: "classes/:classId",
           element: <ClassDetail />,
-          // loader: ({ params }) => {
-          //   return redirect("/classes/" + params.classId + "/overview");
-          // },
           children: [
             {
               path: "overview",
               loader: async ({ params }) => {
-                const jwt = localStorage.getItem("jwt");
-                const classInfo = await axios.get(
-                  "http://localhost:3000/api/v1/classes/" + params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-
-                return {
-                  name: classInfo.data.class.name,
-                  createdAt: Date(classInfo.data.class.createdAt),
-                  description: classInfo.data.class.description,
-                  subject: classInfo.data.class.subject,
-                  type: classInfo.data.class.type,
-                };
+                try {
+                  const classInfo = await getClassId(params.classId);
+                  return {
+                    name: classInfo.data.class.name,
+                    createdAt: Date(classInfo.data.class.createdAt),
+                    description: classInfo.data.class.description,
+                    subject: classInfo.data.class.subject,
+                    type: classInfo.data.class.type,
+                  };
+                } catch (error) {
+                  console.log(error);
+                }
               },
               element: <NotificationTabContent />,
             },
             {
               path: "student",
               loader: async ({ params }) => {
-                const jwt = localStorage.getItem("jwt");
-                const classInfo = await axios.get(
-                  "http://localhost:3000/api/v1/classes/" + params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-
-                const attendances = await axios.get(
-                  "http://localhost:3000/api/v1/sessions/attendances?classId=" +
-                    params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                return {
-                  students: classInfo.data.students,
-                  attendances: attendances.data,
-                };
+                try {
+                  const classInfo = await getClassId(params.classId);
+                  const attendances = await getAttendances(params.classId);
+                  return {
+                    students: classInfo.data.students,
+                    attendances: attendances.data,
+                  };
+                } catch (error) {
+                  console.log(error);
+                }
               },
               element: <StudentTabContent />,
             },
             {
               path: "schedule",
               loader: async ({ params }) => {
-                const jwt = localStorage.getItem("jwt");
-
-                const day2Date = (day) => {
-                  const day2Index = {
-                    mon: 1,
-                    tue: 2,
-                    wed: 3,
-                    thu: 4,
-                    fri: 5,
-                    sat: 6,
-                    sun: 7,
-                  };
-                  const d = new Date(),
-                    today = d.getDay(),
-                    year = d.getFullYear(),
-                    monthIndex = d.getMonth(),
-                    date = d.getDate();
-
-                  return new Date(
-                    year,
-                    monthIndex,
-                    date - today + day2Index[day]
+                try {
+                  const classInfo = await getClassId(params.classId);
+                  const defaultSchedules = await getSchedulesDefault(
+                    params.classId
                   );
-                };
-
-                const classInfo = await axios.get(
-                  "http://localhost:3000/api/v1/classes/" + params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                const defaultSchedules = await axios.get(
-                  "http://localhost:3000/api/v1/schedules/default?classId=" +
-                    params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                const offsetSchedule = await axios.get(
-                  "http://localhost:3000/api/v1/schedules/offset?classId=" +
-                    params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                return {
-                  startDate: day2Date("mon"),
-                  endDate: day2Date("sun"),
-                  classInfo: classInfo.data.class,
-                  defaultSchedules: defaultSchedules.data.DefaultSchedules.map(
-                    ({ id, day, startTime, endTime }) => ({
-                      id,
-                      startTime,
-                      endTime,
-                      date: day2Date(day),
-                    })
-                  ),
-                  offsetSchedules: offsetSchedule.data.OffsetSchedules,
-                };
+                  const offsetSchedules = await getSchedulesOffset(
+                    params.classId
+                  );
+                  return {
+                    startDate: day2Date("mon"),
+                    endDate: day2Date("sun"),
+                    classInfo: classInfo.data.class,
+                    defaultSchedules:
+                      defaultSchedules.data.DefaultSchedules.map(
+                        ({ id, day, startTime, endTime }) => ({
+                          id,
+                          startTime,
+                          endTime,
+                          date: day2Date(day),
+                        })
+                      ),
+                    offsetSchedules: offsetSchedules.data.OffsetSchedules,
+                  };
+                } catch (error) {
+                  console.log(error);
+                }
               },
               element: <ScheduleTabContent />,
             },
             {
               path: "assignment",
               loader: async ({ params }) => {
-                const jwt = localStorage.getItem("jwt");
-                const assignments = await axios.get(
-                  "http://localhost:3000/api/v1/assignments?classId=" +
-                    params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                return { assignments: assignments.data.Assignments };
+                try {
+                  const assignments = await getAssignments(params.classId);
+                  return { assignments: assignments.data.Assignments };
+                } catch (error) {
+                  console.log(error);
+                }
               },
               element: <AssignmentTabContent />,
             },
             {
               path: "session",
               loader: async ({ params }) => {
-                const jwt = localStorage.getItem("jwt");
-                const classInfo = await axios.get(
-                  "http://localhost:3000/api/v1/classes/" + params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                const sessions = await axios.get(
-                  "http://localhost:3000/api/v1/sessions?classId=" +
-                    params.classId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                const current = new Date();
-                const startThisMonth = new Date(
-                  current.getFullYear(),
-                  current.getMonth(),
-                  1
-                );
-                const startLastMonth = new Date(
-                  current.getFullYear(),
-                  current.getMonth() - 1,
-                  1
-                );
-                return {
-                  students: classInfo.data.students,
-                  sessions: sessions.data.Sessions,
-                  thisMonthSessions: sessions.data.Sessions.filter(
-                    (session) => startThisMonth < new Date(session.createdAt)
-                  ),
-                  lastMonthSessions: sessions.data.Sessions.filter(
-                    (session) =>
-                      startLastMonth < new Date(session.createdAt) &&
-                      new Date(session.createdAt) < startThisMonth
-                  ),
-                  earlierSessions: sessions.data.Sessions.filter(
-                    (session) =>
-                      startLastMonth < new Date(session.createdAt) &&
-                      new Date(session.createdAt) < startLastMonth
-                  ),
-                };
+                try {
+                  const classInfo = await getClassId(params.classId);
+                  const sessions = await getSessions(params.classId);
+
+                  const current = new Date();
+                  const startThisMonth = new Date(
+                    current.getFullYear(),
+                    current.getMonth(),
+                    1
+                  );
+                  const startLastMonth = new Date(
+                    current.getFullYear(),
+                    current.getMonth() - 1,
+                    1
+                  );
+                  return {
+                    students: classInfo.data.students,
+                    sessions: sessions.data.Sessions,
+                    thisMonthSessions: sessions.data.Sessions.filter(
+                      (session) => startThisMonth < new Date(session.createdAt)
+                    ),
+                    lastMonthSessions: sessions.data.Sessions.filter(
+                      (session) =>
+                        startLastMonth < new Date(session.createdAt) &&
+                        new Date(session.createdAt) < startThisMonth
+                    ),
+                    earlierSessions: sessions.data.Sessions.filter(
+                      (session) =>
+                        startLastMonth < new Date(session.createdAt) &&
+                        new Date(session.createdAt) < startLastMonth
+                    ),
+                  };
+                } catch (error) {
+                  console.log(error);
+                }
               },
               element: <SessionTabContent />,
             },
             {
               path: "resource",
               element: (
-                <iframe
-                  src="https://drive.google.com/embeddedfolderview?id=1vbGvSNIdE4NMV17PnR8VDSwOBJqmKIxq#grid"
-                  className="w-100 vh-100"
-                />
+                <iframe src={DRIVE_EMBED_URL} className="w-100 vh-100" />
               ),
             },
           ],
@@ -309,38 +219,32 @@ function App() {
         {
           path: "students/:studentId",
           loader: async ({ params }) => {
-            const jwt = localStorage.getItem("jwt");
-            const student = await axios.get(
-              "http://localhost:3000/api/v1/students/" + params.studentId,
-              {
-                headers: {
-                  Authorization: "Bearer " + jwt,
-                },
-              }
-            );
-            return {
-              student: student.data.student,
-              profile: student.data.profile,
-            };
+            try {
+              const student = await getStudentInfo(params.studentId);
+
+              return {
+                student: student.data.student,
+                profile: student.data.profile,
+              };
+            } catch (error) {
+              console.log(error);
+            }
           },
           element: <StudentProfile />,
           children: [
             {
               index: true,
               loader: async ({ params }) => {
-                const jwt = localStorage.getItem("jwt");
-                const student = await axios.get(
-                  "http://localhost:3000/api/v1/students/" + params.studentId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                return {
-                  student: student.data.student,
-                  profile: student.data.profile,
-                };
+                try {
+                  const student = await getStudentInfo(params.studentId);
+
+                  return {
+                    student: student.data.student,
+                    profile: student.data.profile,
+                  };
+                } catch (error) {
+                  console.log(error);
+                }
               },
               element: <OverviewTabContent />,
             },
@@ -351,19 +255,16 @@ function App() {
             {
               path: "academic",
               loader: async ({ params }) => {
-                const jwt = localStorage.getItem("jwt");
-                const student = await axios.get(
-                  "http://localhost:3000/api/v1/students/" + params.studentId,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + jwt,
-                    },
-                  }
-                );
-                return {
-                  student: student.data.student,
-                  profile: student.data.profile,
-                };
+                try {
+                  const student = await getStudentInfo(params.studentId);
+
+                  return {
+                    student: student.data.student,
+                    profile: student.data.profile,
+                  };
+                } catch (error) {
+                  console.log(error);
+                }
               },
               element: <AcademicTabContent />,
             },
@@ -377,7 +278,11 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
 }
 
 export default App;
