@@ -1,8 +1,9 @@
-import { Row, Card, Nav, Navbar } from "react-bootstrap";
+import { Row, Card, Nav, Navbar, Button } from "react-bootstrap";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import NavItemLink from "../components/NavItemLink";
+import { PencilSquare } from "react-bootstrap-icons";
 
 export default function ClassDetail() {
   return (
@@ -19,14 +20,14 @@ export default function ClassDetail() {
           />
           <NavItemLink to="session" eventKey="session" label="Session" />
           <NavItemLink to="resource" eventKey="resource" label="Resource" />
-          <Navbar.Collapse className="justify-content-end">
-            <Navbar.Text>
-              Signed in as: <a href="#login">Mark Otto</a>
-            </Navbar.Text>
-          </Navbar.Collapse>
+
+          <Nav.Item className="ms-auto">
+            <Link className="btn btn-light" to="edit">
+              <PencilSquare />
+            </Link>
+          </Nav.Item>
         </Nav>
         <Outlet />
-        <Row className="justify-content-center"></Row>
       </Card.Body>
     </Card>
   );
