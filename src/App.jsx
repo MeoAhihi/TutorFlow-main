@@ -35,6 +35,7 @@ import { DRIVE_EMBED_URL } from "./constants/common";
 import { day2Date } from "./utils/formatDate";
 import { AuthProvider } from "./context/AuthContext";
 import NewClass from "./routes/NewClass";
+import UpdateClass from "./routes/UpdateClass";
 
 function App() {
   const router = createBrowserRouter([
@@ -220,6 +221,24 @@ function App() {
               ),
             },
           ],
+        },
+        {
+          path: "classes/:classId/edit",
+          loader: async ({ params }) => {
+            try {
+              const classInfo = await getClassId(params.classId);
+
+              return {
+                name: classInfo.data.class.name,
+                subject: classInfo.data.class.subject,
+                type: classInfo.data.class.type,
+                description: classInfo.data.class.description,
+              };
+            } catch (error) {
+              console.log(error);
+            }
+          },
+          element: <UpdateClass />,
         },
         {
           path: "students/:studentId",
