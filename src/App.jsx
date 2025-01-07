@@ -34,6 +34,7 @@ import { getStudentInfo, getStudents } from "./api/students.api";
 import { DRIVE_EMBED_URL } from "./constants/common";
 import { day2Date } from "./utils/formatDate";
 import { AuthProvider } from "./context/AuthContext";
+import NewClass from "./routes/NewClass";
 
 function App() {
   const router = createBrowserRouter([
@@ -84,6 +85,10 @@ function App() {
             };
           },
           element: <Dashboard />,
+        },
+        {
+          path: "classes/new",
+          element: <NewClass />,
         },
         {
           path: "classes/:classId",

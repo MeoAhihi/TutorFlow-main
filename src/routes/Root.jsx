@@ -8,8 +8,8 @@ import {
   Row,
   Tab,
 } from "react-bootstrap";
-import { ChevronDown } from "react-bootstrap-icons";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { ChevronDown, PlusCircle } from "react-bootstrap-icons";
+import { Link, Outlet, useLoaderData } from "react-router-dom";
 import NavItemLink from "../components/NavItemLink";
 import { useAuth } from "../context/AuthContext";
 
@@ -41,7 +41,12 @@ export default function Root() {
             <Nav variant="pills" className="flex-column">
               <NavItemLink to="" eventKey="dashboard" label="Dashboard" />
               <hr className="my-2" />
-              <Card.Text>Classes</Card.Text>
+              <Card.Text className="d-flex justify-content-between">
+                Classes
+                <Link to="/classes/new" className="btn btn-light btn-sm">
+                  <PlusCircle />
+                </Link>
+              </Card.Text>
               {classes.map((cls) => (
                 <NavItemLink
                   key={cls.id}

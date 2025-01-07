@@ -1,4 +1,4 @@
-import { Row, Card, Nav } from "react-bootstrap";
+import { Row, Card, Nav, Navbar } from "react-bootstrap";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Outlet } from "react-router-dom";
@@ -19,6 +19,11 @@ export default function ClassDetail() {
           />
           <NavItemLink to="session" eventKey="session" label="Session" />
           <NavItemLink to="resource" eventKey="resource" label="Resource" />
+          <Navbar.Collapse className="justify-content-end">
+            <Navbar.Text>
+              Signed in as: <a href="#login">Mark Otto</a>
+            </Navbar.Text>
+          </Navbar.Collapse>
         </Nav>
         <Outlet />
         <Row className="justify-content-center"></Row>
