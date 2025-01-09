@@ -78,7 +78,12 @@ export default function Root() {
               ))}
               <hr className="my-2" />
 
-              <Card.Text>Students</Card.Text>
+              <Card.Text className="d-flex justify-content-between">
+                Students
+                <Link to="/students/new" className="btn btn-light btn-sm">
+                  <PlusCircle />
+                </Link>
+              </Card.Text>
               {students.map(({ id, name }) => (
                 <NavItemLink
                   key={id}

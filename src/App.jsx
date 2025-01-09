@@ -1,4 +1,3 @@
-import { decodeToken } from "react-jwt";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -36,25 +35,19 @@ import StudentProfile, {
 import StudentTabContent, {
   loader as studentLoader,
 } from "./routes/StudentTabContent";
+import UpdateStudent, {
+  loader as updateStudentLoader,
+  action as updateStudentAction,
+} from "./routes/UpdateStudent";
 
-import {
-  getAssignments,
-  getAttendances,
-  getClasses,
-  getClassId,
-  getSchedulesDefault,
-  getSchedulesOffset,
-  getSessions,
-} from "./api/classes.api";
-import { getStudentInfo, getStudents } from "./api/students.api";
 import { DRIVE_EMBED_URL } from "./constants/common";
-import { day2Date } from "./utils/formatDate";
 import { AuthProvider } from "./context/AuthContext";
 import NewClass, { action as newClassAction } from "./routes/NewClass";
 import UpdateClass, {
   loader as updateClassLoader,
   action as updateClassAction,
 } from "./routes/UpdateClass";
+import NewStudent, { action as newStudentAction } from "./routes/NewStudent";
 
 function App() {
   const router = createBrowserRouter([
@@ -130,6 +123,11 @@ function App() {
           element: <UpdateClass />,
         },
         {
+          path: "students/new",
+          action: newStudentAction,
+          element: <NewStudent />,
+        },
+        {
           path: "students/:studentId",
           loader: studentProfileLoader,
           element: <StudentProfile />,
@@ -153,6 +151,12 @@ function App() {
               element: <FeedbackTabContent />,
             },
           ],
+        },
+        {
+          path: "students/:studentId/edit",
+          loader: updateStudentLoader,
+          action: updateStudentAction,
+          element: <UpdateStudent />,
         },
       ],
     },

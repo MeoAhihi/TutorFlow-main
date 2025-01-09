@@ -9,3 +9,8 @@ export const getStudentInfo = async (id) => {
   const res = await restConnector().get("/students/" + id);
   return res;
 };
+
+export const postStudent = async (student) => {
+  const res = await restConnector().post("/students", student);
+  return res;
+};

@@ -1,10 +1,11 @@
 import { Card, Col, Container, Nav, Row } from "react-bootstrap";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Link, Outlet, useLoaderData } from "react-router-dom";
 
 import UsernameCard from "../components/UsernameCard";
 import ParentInfoCard from "../components/ParentInfoCard";
 import NavItemLink from "../components/NavItemLink";
 import { getStudentInfo } from "../api/students.api";
+import { GearFill } from "react-bootstrap-icons";
 
 export async function loader({ params }) {
   try {
@@ -49,6 +50,14 @@ export default function StudentProfile() {
                     eventKey="feedback"
                     label="Feedback"
                   />
+                  <Nav.Item className="ms-auto">
+                    <Link
+                      to={`/students/${student.id}/edit`}
+                      className="btn btn-light pt-1 pb-2"
+                    >
+                      <GearFill />
+                    </Link>
+                  </Nav.Item>
                 </Nav>
                 <Outlet student={student} profile={profile} />
               </Card.Body>
