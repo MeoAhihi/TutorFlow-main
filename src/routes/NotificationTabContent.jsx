@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { Card, Table, Row, Col, Button } from "react-bootstrap";
-import { ChevronUp, ChevronDown } from "react-bootstrap-icons";
+import { Card, Table, Row, Col, Button, Modal, Form } from "react-bootstrap";
+import { ChevronUp, ChevronDown, PencilSquare } from "react-bootstrap-icons";
 import { useLoaderData } from "react-router-dom";
 import { getClassId } from "../api/classes.api";
 
@@ -24,6 +24,7 @@ export async function loader({ params }) {
 export default function NotificationTabContent() {
   const { name, createdAt, subject, description, type } = useLoaderData();
   const [showInfo, setShowInfo] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const toggleShowInfo = () => setShowInfo(!showInfo);
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -31,6 +32,8 @@ export default function NotificationTabContent() {
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
   };
+  const handleShowModal = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
   return (
     <Row className="justify-content-center">
       <Col xs={10}>
@@ -42,6 +45,20 @@ export default function NotificationTabContent() {
               objectFit: "cover",
             }}
           />
+          <Card.ImgOverlay>
+            <Button
+              variant="light"
+              className="pt-1 pb-2"
+              onClick={handleShowModal}
+            >
+              <PencilSquare />
+            </Button>
+            <UpdateWallpaperModal
+              show={showModal}
+              handleClose={handleClose}
+              handleSave={console.log}
+            />
+          </Card.ImgOverlay>
           <Card.Body>
             <Card.Title className="d-flex justify-content-between">
               <div>{name}</div>
@@ -90,5 +107,47 @@ export default function NotificationTabContent() {
         </Row>
       </Col>
     </Row>
+  );
+}
+
+function UpdateWallpaperModal({ show, handleClose, handleSave }) {
+  const [imageUrl, setImageUrl] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleSave(imageUrl);
+  };
+
+  return (
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Update Wallpaper Image</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formImageUrl" className="mb-3">
+            <Form.Label className="mb-3">Image URL</Form.Label>
+            <Form.Control
+              type="file"
+              label="Choose file"
+              className="mb-3"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setImageUrl(reader.result);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Save Changes
+          </Button>
+        </Form>
+      </Modal.Body>
+    </Modal>
   );
 }

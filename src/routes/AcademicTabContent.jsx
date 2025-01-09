@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { getStudentInfo } from "../api/students.api";
+import { useLoaderData } from "react-router-dom";
 
 export async function loader({ params }) {
   try {

@@ -3,7 +3,7 @@ import { Row, Card, Nav, Navbar, Button } from "react-bootstrap";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Link, Outlet } from "react-router-dom";
 import NavItemLink from "../components/NavItemLink";
-import { PencilSquare } from "react-bootstrap-icons";
+import { PencilSquare, GearFill } from "react-bootstrap-icons";
 
 export default function ClassDetail() {
   return (
@@ -22,8 +22,8 @@ export default function ClassDetail() {
           <NavItemLink to="resource" eventKey="resource" label="Resource" />
 
           <Nav.Item className="ms-auto">
-            <Link className="btn btn-light" to="edit">
-              <PencilSquare />
+            <Link className="btn btn-light pb-2" to="edit">
+              <GearFill />
             </Link>
           </Nav.Item>
         </Nav>

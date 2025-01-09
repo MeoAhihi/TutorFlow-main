@@ -20,14 +20,12 @@ export async function loader({ params }) {
 
 export async function action({ params, request }) {
   if (request.method === "PATCH") {
-    // Handle edit class logic here
     const formData = await request.formData();
     const update = Object.fromEntries(formData);
     const updatedClass = await patchClass(params.classId, update);
     return redirect("/classes/" + params.classId);
   }
   if (request.method === "DELETE") {
-    // Handle delete class logic here
     const deletedClass = await deleteClass(params.classId);
     return redirect("/");
   }
@@ -62,20 +60,6 @@ export default function UpdateClass() {
         break;
     }
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = {
-      name,
-      subject,
-      description,
-      type,
-    };
-    // Handle form submission logic here
-    console.log(formData);
-  };
-
-  const handleDeleteClass = () => console.log("Delete class");
 
   return (
     <Card
