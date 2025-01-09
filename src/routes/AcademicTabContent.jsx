@@ -10,6 +10,20 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { getStudentInfo } from "../api/students.api";
+
+export async function loader({ params }) {
+  try {
+    const student = await getStudentInfo(params.studentId);
+
+    return {
+      student: student.data.student,
+      profile: student.data.profile,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function AcademicTabContent() {
   const { student, profile } = useLoaderData();

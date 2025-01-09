@@ -1,6 +1,7 @@
 import Avatar from "react-avatar";
 import { Card, Row, Col } from "react-bootstrap";
 import { useLoaderData } from "react-router-dom";
+import { getClassId, getSessions } from "../api/classes.api";
 
 function toTime(ms) {
   const s = Math.floor(ms / 1000) - 31;
@@ -12,6 +13,45 @@ function toTime(ms) {
     (hours ? hours + "h" : "") + (minutes ? minutes + "m" : "") + seconds + "s"
   );
 }
+
+export async function loader({ params }) {
+  try {
+    const classInfo = await getClassId(params.classId);
+    const sessions = await getSessions(params.classId);
+
+    const current = new Date();
+    const startThisMonth = new Date(
+      current.getFullYear(),
+      current.getMonth(),
+      1
+    );
+    const startLastMonth = new Date(
+      current.getFullYear(),
+      current.getMonth() - 1,
+      1
+    );
+    return {
+      students: classInfo.data.students,
+      sessions: sessions.data.Sessions,
+      thisMonthSessions: sessions.data.Sessions.filter(
+        (session) => startThisMonth < new Date(session.createdAt)
+      ),
+      lastMonthSessions: sessions.data.Sessions.filter(
+        (session) =>
+          startLastMonth < new Date(session.createdAt) &&
+          new Date(session.createdAt) < startThisMonth
+      ),
+      earlierSessions: sessions.data.Sessions.filter(
+        (session) =>
+          startLastMonth < new Date(session.createdAt) &&
+          new Date(session.createdAt) < startLastMonth
+      ),
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default function SessionTabContent() {
   const { thisMonthSessions, lastMonthSessions, earlierSessions, students } =
     useLoaderData();

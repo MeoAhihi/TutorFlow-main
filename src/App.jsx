@@ -5,21 +5,37 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Error from "./components/pages/Error";
-import AcademicTabContent from "./routes/AcademicTabContent";
-import AssignmentTabContent from "./routes/AssignmentTabContent";
+import AcademicTabContent, {
+  loader as academicLoader,
+} from "./routes/AcademicTabContent";
+import AssignmentTabContent, {
+  loader as assignmentLoader,
+} from "./routes/AssignmentTabContent";
 import ClassDetail from "./routes/ClassDetail";
-import Dashboard from "./routes/Dashboard";
+import Dashboard, { loader as dashboardLoader } from "./routes/Dashboard";
 import FeedbackTabContent from "./routes/FeedbackTabContent";
 import Login from "./routes/Login";
-import NotificationTabContent from "./routes/NotificationTabContent";
-import OverviewTabContent from "./routes/OverviewTabContent";
+import NotificationTabContent, {
+  loader as notificationLoader,
+} from "./routes/NotificationTabContent";
+import OverviewTabContent, {
+  loader as overviewLoader,
+} from "./routes/OverviewTabContent";
 import ProgressTabContent from "./routes/ProgressTabContent";
-import Root from "./routes/Root";
-import ScheduleTabContent from "./routes/ScheduleTabContent";
-import SessionTabContent from "./routes/SessionTabContent";
+import Root, { loader as rootLoader } from "./routes/Root";
+import ScheduleTabContent, {
+  loader as scheduleLoader,
+} from "./routes/ScheduleTabContent";
+import SessionTabContent, {
+  loader as sessionLoader,
+} from "./routes/SessionTabContent";
 import Signup from "./routes/Signup";
-import StudentProfile from "./routes/StudentProfile";
-import StudentTabContent from "./routes/StudentTabContent";
+import StudentProfile, {
+  loader as studentProfileLoader,
+} from "./routes/StudentProfile";
+import StudentTabContent, {
+  loader as studentLoader,
+} from "./routes/StudentTabContent";
 
 import {
   getAssignments,
@@ -35,7 +51,7 @@ import { DRIVE_EMBED_URL } from "./constants/common";
 import { day2Date } from "./utils/formatDate";
 import { AuthProvider } from "./context/AuthContext";
 import NewClass from "./routes/NewClass";
-import UpdateClass from "./routes/UpdateClass";
+import UpdateClass, { loader as updateClassLoader } from "./routes/UpdateClass";
 
 function App() {
   const router = createBrowserRouter([
@@ -55,36 +71,11 @@ function App() {
         </ProtectedRoute>
       ),
       errorElement: <Error />,
-      loader: async () => {
-        try {
-          const students = await getStudents();
-          const classes = await getClasses();
-          return {
-            students: students.data.student.map((student) => ({
-              id: student.id,
-              name: student.User.firstName + " " + student.User.lastName,
-            })),
-            classes: classes.data.classes.map((classInfo) => ({
-              id: classInfo.id,
-              name: classInfo.name,
-            })),
-          };
-        } catch (error) {
-          console.log(error);
-        }
-      },
+      loader: rootLoader,
       children: [
         {
           index: true,
-          loader: () => {
-            const jwt = localStorage.getItem("jwt");
-            const tutorInfo = decodeToken(jwt);
-            return {
-              tutorName:
-                (tutorInfo.firstName ?? "") + " " + (tutorInfo.lastName ?? ""),
-              avatarUrl: tutorInfo.avatarUrl ?? "",
-            };
-          },
+          loader: dashboardLoader,
           element: <Dashboard />,
         },
         {
@@ -97,121 +88,27 @@ function App() {
           children: [
             {
               path: "overview",
-              loader: async ({ params }) => {
-                try {
-                  const classInfo = await getClassId(params.classId);
-                  return {
-                    name: classInfo.data.class.name,
-                    createdAt: Date(classInfo.data.class.createdAt),
-                    description: classInfo.data.class.description,
-                    subject: classInfo.data.class.subject,
-                    type: classInfo.data.class.type,
-                  };
-                } catch (error) {
-                  console.log(error);
-                }
-              },
+              loader: notificationLoader,
               element: <NotificationTabContent />,
             },
             {
               path: "student",
-              loader: async ({ params }) => {
-                try {
-                  const classInfo = await getClassId(params.classId);
-                  const attendances = await getAttendances(params.classId);
-                  return {
-                    students: classInfo.data.students,
-                    attendances: attendances.data,
-                  };
-                } catch (error) {
-                  console.log(error);
-                }
-              },
+              loader: studentLoader,
               element: <StudentTabContent />,
             },
             {
               path: "schedule",
-              loader: async ({ params }) => {
-                try {
-                  const classInfo = await getClassId(params.classId);
-                  const defaultSchedules = await getSchedulesDefault(
-                    params.classId
-                  );
-                  const offsetSchedules = await getSchedulesOffset(
-                    params.classId
-                  );
-                  return {
-                    startDate: day2Date("mon"),
-                    endDate: day2Date("sun"),
-                    classInfo: classInfo.data.class,
-                    defaultSchedules:
-                      defaultSchedules.data.DefaultSchedules.map(
-                        ({ id, day, startTime, endTime }) => ({
-                          id,
-                          startTime,
-                          endTime,
-                          date: day2Date(day),
-                        })
-                      ),
-                    offsetSchedules: offsetSchedules.data.OffsetSchedules,
-                  };
-                } catch (error) {
-                  console.log(error);
-                }
-              },
+              loader: scheduleLoader,
               element: <ScheduleTabContent />,
             },
             {
               path: "assignment",
-              loader: async ({ params }) => {
-                try {
-                  const assignments = await getAssignments(params.classId);
-                  return { assignments: assignments.data.Assignments };
-                } catch (error) {
-                  console.log(error);
-                }
-              },
+              loader: assignmentLoader,
               element: <AssignmentTabContent />,
             },
             {
               path: "session",
-              loader: async ({ params }) => {
-                try {
-                  const classInfo = await getClassId(params.classId);
-                  const sessions = await getSessions(params.classId);
-
-                  const current = new Date();
-                  const startThisMonth = new Date(
-                    current.getFullYear(),
-                    current.getMonth(),
-                    1
-                  );
-                  const startLastMonth = new Date(
-                    current.getFullYear(),
-                    current.getMonth() - 1,
-                    1
-                  );
-                  return {
-                    students: classInfo.data.students,
-                    sessions: sessions.data.Sessions,
-                    thisMonthSessions: sessions.data.Sessions.filter(
-                      (session) => startThisMonth < new Date(session.createdAt)
-                    ),
-                    lastMonthSessions: sessions.data.Sessions.filter(
-                      (session) =>
-                        startLastMonth < new Date(session.createdAt) &&
-                        new Date(session.createdAt) < startThisMonth
-                    ),
-                    earlierSessions: sessions.data.Sessions.filter(
-                      (session) =>
-                        startLastMonth < new Date(session.createdAt) &&
-                        new Date(session.createdAt) < startLastMonth
-                    ),
-                  };
-                } catch (error) {
-                  console.log(error);
-                }
-              },
+              loader: sessionLoader,
               element: <SessionTabContent />,
             },
             {
@@ -224,52 +121,17 @@ function App() {
         },
         {
           path: "classes/:classId/edit",
-          loader: async ({ params }) => {
-            try {
-              const classInfo = await getClassId(params.classId);
-
-              return {
-                name: classInfo.data.class.name,
-                subject: classInfo.data.class.subject,
-                type: classInfo.data.class.type,
-                description: classInfo.data.class.description,
-              };
-            } catch (error) {
-              console.log(error);
-            }
-          },
+          loader: updateClassLoader,
           element: <UpdateClass />,
         },
         {
           path: "students/:studentId",
-          loader: async ({ params }) => {
-            try {
-              const student = await getStudentInfo(params.studentId);
-
-              return {
-                student: student.data.student,
-                profile: student.data.profile,
-              };
-            } catch (error) {
-              console.log(error);
-            }
-          },
+          loader: studentProfileLoader,
           element: <StudentProfile />,
           children: [
             {
               index: true,
-              loader: async ({ params }) => {
-                try {
-                  const student = await getStudentInfo(params.studentId);
-
-                  return {
-                    student: student.data.student,
-                    profile: student.data.profile,
-                  };
-                } catch (error) {
-                  console.log(error);
-                }
-              },
+              loader: overviewLoader,
               element: <OverviewTabContent />,
             },
             {
@@ -278,18 +140,7 @@ function App() {
             },
             {
               path: "academic",
-              loader: async ({ params }) => {
-                try {
-                  const student = await getStudentInfo(params.studentId);
-
-                  return {
-                    student: student.data.student,
-                    profile: student.data.profile,
-                  };
-                } catch (error) {
-                  console.log(error);
-                }
-              },
+              loader: academicLoader,
               element: <AcademicTabContent />,
             },
             {

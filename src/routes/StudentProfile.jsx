@@ -4,6 +4,20 @@ import { Outlet, useLoaderData } from "react-router-dom";
 import UsernameCard from "../components/UsernameCard";
 import ParentInfoCard from "../components/ParentInfoCard";
 import NavItemLink from "../components/NavItemLink";
+import { getStudentInfo } from "../api/students.api";
+
+export async function loader({ params }) {
+  try {
+    const student = await getStudentInfo(params.studentId);
+
+    return {
+      student: student.data.student,
+      profile: student.data.profile,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function StudentProfile() {
   const { student, profile } = useLoaderData();

@@ -12,6 +12,27 @@ import { ChevronDown, PlusCircle } from "react-bootstrap-icons";
 import { Link, Outlet, useLoaderData } from "react-router-dom";
 import NavItemLink from "../components/NavItemLink";
 import { useAuth } from "../context/AuthContext";
+import { getStudents } from "../api/students.api";
+import { getClasses } from "../api/classes.api";
+
+export async function loader() {
+  try {
+    const students = await getStudents();
+    const classes = await getClasses();
+    return {
+      students: students.data.student.map((student) => ({
+        id: student.id,
+        name: student.User.firstName + " " + student.User.lastName,
+      })),
+      classes: classes.data.classes.map((classInfo) => ({
+        id: classInfo.id,
+        name: classInfo.name,
+      })),
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function Root() {
   const { students, classes } = useLoaderData();

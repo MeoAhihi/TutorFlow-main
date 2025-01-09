@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Col, Row, Card, Image } from "react-bootstrap";
+import { postClass } from "../api/classes.api";
 
 export default function NewClass() {
   const [coverPhoto, setCoverPhoto] = useState("");
@@ -31,7 +32,7 @@ export default function NewClass() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {
       coverPhoto,
@@ -40,8 +41,8 @@ export default function NewClass() {
       description,
       type,
     };
-    // Handle form submission logic here
-    console.log(formData);
+    const classInfo = await postClass(formData);
+    console.log(classInfo);
   };
 
   return (
@@ -87,17 +88,24 @@ export default function NewClass() {
                 <Form.Label column sm={2}>
                   Type
                 </Form.Label>
-                <Col sm={10}>
-                  <Form.Control
-                    as="select"
+                <Col sm={10} className="d-flex align-items-center">
+                  <Form.Check
+                    type="radio"
+                    label="Online"
                     name="type"
-                    value={type}
+                    value="Online"
                     onChange={handleChange}
-                  >
-                    <option value="">Select type</option>
-                    <option value="Online">Online</option>
-                    <option value="Offline">Offline</option>
-                  </Form.Control>
+                    checked={type === "Online"}
+                    className="me-3"
+                  />
+                  <Form.Check
+                    type="radio"
+                    label="Offline"
+                    name="type"
+                    value="Offline"
+                    onChange={handleChange}
+                    checked={type === "Offline"}
+                  />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} controlId="description" className="mb-3">

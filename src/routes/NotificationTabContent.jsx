@@ -4,6 +4,22 @@ import { Editor } from "react-draft-wysiwyg";
 import { Card, Table, Row, Col, Button } from "react-bootstrap";
 import { ChevronUp, ChevronDown } from "react-bootstrap-icons";
 import { useLoaderData } from "react-router-dom";
+import { getClassId } from "../api/classes.api";
+
+export async function loader({ params }) {
+  try {
+    const classInfo = await getClassId(params.classId);
+    return {
+      name: classInfo.data.class.name,
+      createdAt: Date(classInfo.data.class.createdAt),
+      description: classInfo.data.class.description,
+      subject: classInfo.data.class.subject,
+      type: classInfo.data.class.type,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function NotificationTabContent() {
   const { name, createdAt, subject, description, type } = useLoaderData();

@@ -10,6 +10,11 @@ export const getClassId = async (id) => {
   return res;
 };
 
+export const postClass = async (data) => {
+  const res = await restConnector().post("/classes", data);
+  return res;
+};
+
 export const getSchedulesDefault = async (classId) => {
   const res = await restConnector().get(
     "/schedules/default?classId=" + classId

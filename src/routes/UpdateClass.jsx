@@ -1,6 +1,22 @@
-import { Row, Card, Col, Button, Form } from "react-bootstrap";
+import { Row, Card, Col, Button, Form, Alert } from "react-bootstrap";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
+import { getClassId } from "../api/classes.api";
+
+export async function loader({ params }) {
+  try {
+    const classInfo = await getClassId(params.classId);
+
+    return {
+      name: classInfo.data.class.name,
+      subject: classInfo.data.class.subject,
+      type: classInfo.data.class.type,
+      description: classInfo.data.class.description,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function UpdateClass() {
   const loaderData = useLoaderData();
@@ -43,6 +59,9 @@ export default function UpdateClass() {
     // Handle form submission logic here
     console.log(formData);
   };
+
+  const handleDeleteClass = () => console.log("Delete class");
+
   return (
     <Card
       border="light"
@@ -51,7 +70,8 @@ export default function UpdateClass() {
       <Card.Body className="p-4 mt-4">
         <Row className="justify-content-center ">
           <Col xs={10}>
-            <h1 className="my-4">Edit Class</h1>
+            <h1>Setting</h1>
+            <h2 className="my-4">Edit Class</h2>
             <Form onSubmit={handleSubmit}>
               <Form.Group as={Row} controlId="name" className="mb-3">
                 <Form.Label column sm={2}>
@@ -121,36 +141,24 @@ export default function UpdateClass() {
                 </Col>
               </Form.Group>
 
-              {/* <Form.Group as={Row} controlId="coverPhoto" className="mb-3">
-                <Form.Label column sm={2}>
-                  Cover Photo
-                </Form.Label>
-                <Col sm={10}>
-                  <Form.Control
-                    type="file"
-                    name="coverPhoto"
-                    onChange={(e) => setCoverPhoto(e.target.files[0])}
-                    accept="image/*"
-                  />
-                </Col>
-                {coverPhoto && (
-                  <Row className="justify-content-center mb-3 mt-3">
-                    <Col xs={10}>
-                      <Image
-                        src={URL.createObjectURL(coverPhoto)}
-                        alt="Cover"
-                        height={200}
-                      />
-                    </Col>
-                  </Row>
-                )}
-              </Form.Group> */}
               <div className="d-flex justify-content-end">
                 <Button variant="primary" type="submit">
                   Edit Class
                 </Button>
               </div>
             </Form>
+            <hr />
+            <h2>Delete Class</h2>
+            <Alert variant="danger">
+              <strong>Warning:</strong> After you delete, the class can never be
+              restored!
+            </Alert>
+            <div className="d-flex justify-content-end">
+              {/* <Form.Control /> */}
+              <Button variant="danger" onClick={handleDeleteClass}>
+                Delete Class
+              </Button>
+            </div>
           </Col>
         </Row>
       </Card.Body>

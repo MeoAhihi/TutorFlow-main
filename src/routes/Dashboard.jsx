@@ -1,6 +1,16 @@
 import Avatar from "react-avatar";
 import { Card, Button, Stack } from "react-bootstrap";
+import { decodeToken } from "react-jwt";
 import { useLoaderData } from "react-router-dom";
+
+export function loader() {
+  const jwt = localStorage.getItem("jwt");
+  const tutorInfo = decodeToken(jwt);
+  return {
+    tutorName: (tutorInfo.firstName ?? "") + " " + (tutorInfo.lastName ?? ""),
+    avatarUrl: tutorInfo.avatarUrl ?? "",
+  };
+}
 
 export default function Dashboard() {
   const { tutorName, avatarUrl } = useLoaderData();

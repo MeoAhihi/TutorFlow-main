@@ -5,6 +5,12 @@ import { createViewWeek } from "@schedule-x/calendar";
 import { useLoaderData } from "react-router-dom";
 
 import "@schedule-x/theme-default/dist/index.css";
+import {
+  getClassId,
+  getSchedulesDefault,
+  getSchedulesOffset,
+} from "../api/classes.api";
+import { day2Date } from "../utils/formatDate";
 
 const to2digits = (number) => ("0" + number).slice(-2);
 const toEventDate = (date) =>
@@ -13,6 +19,30 @@ const toEventDate = (date) =>
   )}`;
 const toEventTime = (time) =>
   `${to2digits(date.getHours())}:${to2digits(date.getMinutes())}`;
+
+export async function loader({ params }) {
+  try {
+    const classInfo = await getClassId(params.classId);
+    const defaultSchedules = await getSchedulesDefault(params.classId);
+    const offsetSchedules = await getSchedulesOffset(params.classId);
+    return {
+      startDate: day2Date("mon"),
+      endDate: day2Date("sun"),
+      classInfo: classInfo.data.class,
+      defaultSchedules: defaultSchedules.data.DefaultSchedules.map(
+        ({ id, day, startTime, endTime }) => ({
+          id,
+          startTime,
+          endTime,
+          date: day2Date(day),
+        })
+      ),
+      offsetSchedules: offsetSchedules.data.OffsetSchedules,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function ScheduleTabContent() {
   const { defaultSchedules, offsetSchedules, classInfo, startDate, endDate } =

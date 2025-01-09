@@ -10,6 +10,20 @@ import {
   YAxis,
   ResponsiveContainer,
 } from "recharts";
+import { getAttendances, getClassId } from "../api/classes.api";
+
+export async function loader({ params }) {
+  try {
+    const classInfo = await getClassId(params.classId);
+    const attendances = await getAttendances(params.classId);
+    return {
+      students: classInfo.data.students,
+      attendances: attendances.data,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function StudentTabContent() {
   const { students, attendances } = useLoaderData();

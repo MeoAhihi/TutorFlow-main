@@ -1,5 +1,20 @@
 import { Col } from "react-bootstrap";
 import { useLoaderData } from "react-router-dom";
+import { getStudentInfo } from "../api/students.api";
+
+export async function loader({ params }) {
+  try {
+    const student = await getStudentInfo(params.studentId);
+
+    return {
+      student: student.data.student,
+      profile: student.data.profile,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default function OverviewTabContent() {
   const { student, profile } = useLoaderData();
   console.log("OverviewTabContent", student, profile);

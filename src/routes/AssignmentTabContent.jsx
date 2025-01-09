@@ -1,6 +1,16 @@
 import { Col, Row, Button, Card, Image } from "react-bootstrap";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useLoaderData } from "react-router-dom";
+import { getAssignments } from "../api/classes.api";
+
+export async function loader({ params }) {
+  try {
+    const assignments = await getAssignments(params.classId);
+    return { assignments: assignments.data.Assignments };
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export default function AssignmentTabContent() {
   const { assignments } = useLoaderData();
