@@ -1,7 +1,7 @@
 import { Row, Card, Col, Button, Form, Alert } from "react-bootstrap";
 import { useState } from "react";
-import { useLoaderData } from "react-router-dom";
-import { getClassId } from "../api/classes.api";
+import { useLoaderData, Form as RouterForm, redirect } from "react-router-dom";
+import { deleteClass, getClassId, patchClass } from "../api/classes.api";
 
 export async function loader({ params }) {
   try {
@@ -15,6 +15,21 @@ export async function loader({ params }) {
     };
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function action({ params, request }) {
+  if (request.method === "PATCH") {
+    // Handle edit class logic here
+    const formData = await request.formData();
+    const update = Object.fromEntries(formData);
+    const updatedClass = await patchClass(params.classId, update);
+    return redirect("/classes/" + params.classId);
+  }
+  if (request.method === "DELETE") {
+    // Handle delete class logic here
+    const deletedClass = await deleteClass(params.classId);
+    return redirect("/");
   }
 }
 
@@ -72,7 +87,7 @@ export default function UpdateClass() {
           <Col xs={10}>
             <h1>Setting</h1>
             <h2 className="my-4">Edit Class</h2>
-            <Form onSubmit={handleSubmit}>
+            <RouterForm method="patch">
               <Form.Group as={Row} controlId="name" className="mb-3">
                 <Form.Label column sm={2}>
                   Name
@@ -146,19 +161,19 @@ export default function UpdateClass() {
                   Edit Class
                 </Button>
               </div>
-            </Form>
+            </RouterForm>
             <hr />
             <h2>Delete Class</h2>
             <Alert variant="danger">
               <strong>Warning:</strong> After you delete, the class can never be
               restored!
             </Alert>
-            <div className="d-flex justify-content-end">
+            <RouterForm method="delete" className="d-flex justify-content-end">
               {/* <Form.Control /> */}
-              <Button variant="danger" onClick={handleDeleteClass}>
+              <Button variant="danger" type="submit">
                 Delete Class
               </Button>
-            </div>
+            </RouterForm>
           </Col>
         </Row>
       </Card.Body>

@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { Form, Button, Col, Row, Card, Image } from "react-bootstrap";
+import { redirect, Form as RouterForm } from "react-router-dom";
 import { postClass } from "../api/classes.api";
+
+export async function action({ request }) {
+  const formData = await request.formData();
+  const newClass = Object.fromEntries(formData);
+  const classInfo = await postClass(newClass);
+  return redirect("/classes/" + classInfo.data.newClass.id);
+}
 
 export default function NewClass() {
   const [coverPhoto, setCoverPhoto] = useState("");
@@ -32,19 +40,6 @@ export default function NewClass() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = {
-      coverPhoto,
-      name,
-      subject,
-      description,
-      type,
-    };
-    const classInfo = await postClass(formData);
-    console.log(classInfo);
-  };
-
   return (
     <Card
       border="light"
@@ -54,7 +49,7 @@ export default function NewClass() {
         <Row className="justify-content-center ">
           <Col xs={10}>
             <h1 className="my-4">Add New Class</h1>
-            <Form onSubmit={handleSubmit}>
+            <RouterForm method="post">
               <Form.Group as={Row} controlId="name" className="mb-3">
                 <Form.Label column sm={2}>
                   Name
@@ -152,7 +147,7 @@ export default function NewClass() {
                   Add Class
                 </Button>
               </div>
-            </Form>
+            </RouterForm>
           </Col>
         </Row>
       </Card.Body>

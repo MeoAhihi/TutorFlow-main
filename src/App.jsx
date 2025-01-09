@@ -50,8 +50,11 @@ import { getStudentInfo, getStudents } from "./api/students.api";
 import { DRIVE_EMBED_URL } from "./constants/common";
 import { day2Date } from "./utils/formatDate";
 import { AuthProvider } from "./context/AuthContext";
-import NewClass from "./routes/NewClass";
-import UpdateClass, { loader as updateClassLoader } from "./routes/UpdateClass";
+import NewClass, { action as newClassAction } from "./routes/NewClass";
+import UpdateClass, {
+  loader as updateClassLoader,
+  action as updateClassAction,
+} from "./routes/UpdateClass";
 
 function App() {
   const router = createBrowserRouter([
@@ -80,6 +83,7 @@ function App() {
         },
         {
           path: "classes/new",
+          action: newClassAction,
           element: <NewClass />,
         },
         {
@@ -122,6 +126,7 @@ function App() {
         {
           path: "classes/:classId/edit",
           loader: updateClassLoader,
+          action: updateClassAction,
           element: <UpdateClass />,
         },
         {

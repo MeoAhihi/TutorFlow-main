@@ -10,8 +10,18 @@ export const getClassId = async (id) => {
   return res;
 };
 
+export const patchClass = async (id, data) => {
+  const res = await restConnector().patch("/classes/" + id, data);
+  return res;
+};
+
 export const postClass = async (data) => {
   const res = await restConnector().post("/classes", data);
+  return res;
+};
+
+export const deleteClass = async (id) => {
+  const res = await restConnector().delete("/classes/" + id);
   return res;
 };
 
