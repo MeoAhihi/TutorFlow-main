@@ -1,48 +1,65 @@
 import React, { useState } from "react";
+import { Form, Button, Col, Row, Card, Alert } from "react-bootstrap";
+import { redirect, Form as RouterForm, useLoaderData } from "react-router-dom";
 import {
-  Form,
-  Button,
-  Col,
-  Row,
-  Card,
-  Image,
-  Tabs,
-  Tab,
-  Alert,
-} from "react-bootstrap";
-import { redirect, Form as RouterForm } from "react-router-dom";
-import { postStudent } from "../api/students.api";
-export async function loader() {
-  return null;
+  deleteStudent,
+  getStudentInfo,
+  patchStudent,
+  postStudent,
+} from "../api/students.api";
+export async function loader({ params }) {
+  const student = await getStudentInfo(params.studentId);
+  return { student: student.data.student, profile: student.data.profile };
 }
-export async function action({ request }) {
-  const formData = await request.formData();
-  const newStudent = Object.fromEntries(formData);
-  const student = await postStudent(newStudent);
-  return redirect("/students/" + student.data.newClass.id);
+export async function action({ params, request }) {
+  if (request.method === "PATCH") {
+    const formData = await request.formData();
+    const newStudent = Object.fromEntries(formData);
+    const student = await patchStudent(params.studentId, newStudent);
+    console.log(student);
+    return redirect("/students/" + params.studentId);
+  }
+  if (request.method === "DELETE") {
+    const student = await deleteStudent(params.studentId);
+    return redirect("/");
+  }
+  return null;
 }
 
 export default function NewStudent() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [country, setCountry] = useState("");
-  const [biography, setBiography] = useState("");
-  const [gradeLevel, setGradeLevel] = useState("");
-  const [strength, setStrength] = useState("");
-  const [challenges, setChallenges] = useState("");
-  const [learningGoal, setLearningGoal] = useState("");
-  const [preferedLearningMethod, setPreferedLearningMethod] = useState("");
-  const [engagementStyle, setEngagementStyle] = useState("");
-  const [studyHabit, setStudyHabit] = useState("");
-  const [parentExpectation, setParentExpectation] = useState("");
-  const [parentFirstName, setParentFirstName] = useState("");
-  const [parentLastName, setParentLastName] = useState("");
-  const [parentPhoneNumber, setParentPhoneNumber] = useState("");
-  const [parentEmail, setParentEmail] = useState("");
+  const { student, profile } = useLoaderData();
+  const [firstName, setFirstName] = useState(student.firstName ?? "");
+  const [lastName, setLastName] = useState(student.lastName ?? "");
+  const [birthday, setBirthday] = useState(student.birthday ?? "");
+  const [phoneNumber, setPhoneNumber] = useState(student.phoneNumber ?? "");
+  const [email, setEmail] = useState(student.email ?? "");
+  const [address, setAddress] = useState(student.address ?? "");
+  const [country, setCountry] = useState(student.country ?? "");
+  const [biography, setBiography] = useState(student.biography ?? "");
+  const [gradeLevel, setGradeLevel] = useState(profile.gradeLevel ?? "");
+  const [strength, setStrength] = useState(profile.strength ?? "");
+  const [challenges, setChallenges] = useState(profile.challenges ?? "");
+  const [learningGoal, setLearningGoal] = useState(profile.learningGoal ?? "");
+  const [preferedLearningMethod, setPreferedLearningMethod] = useState(
+    profile.preferedLearningMethod ?? ""
+  );
+  const [engagementStyle, setEngagementStyle] = useState(
+    profile.engagementStyle ?? ""
+  );
+  const [studyHabit, setStudyHabit] = useState(profile.studyHabit ?? "");
+  const [parentExpectation, setParentExpectation] = useState(
+    profile.parentExpectation ?? ""
+  );
+  const [parentFirstName, setParentFirstName] = useState(
+    profile.parentFirstName ?? ""
+  );
+  const [parentLastName, setParentLastName] = useState(
+    profile.parentLastName ?? ""
+  );
+  const [parentPhoneNumber, setParentPhoneNumber] = useState(
+    profile.parentPhoneNumber ?? ""
+  );
+  const [parentEmail, setParentEmail] = useState(profile.parentEmail ?? "");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -118,7 +135,7 @@ export default function NewStudent() {
         <Row className="justify-content-center ">
           <Col xs={8}>
             <h1 className="my-4"> Edit Student</h1>
-            <RouterForm method="post">
+            <RouterForm method="patch">
               <h2>Bacis Information</h2>
               <Form.Group as={Row} controlId="firstName" className="mb-3">
                 <Form.Label column sm={2}>
@@ -428,8 +445,8 @@ export default function NewStudent() {
             <hr />
             <h2>Delete Student</h2>
             <Alert variant="danger">
-              <strong>Warning:</strong> After you delete, the student profile can never be
-              restored!
+              <strong>Warning:</strong> After you delete, the student profile
+              can never be restored!
             </Alert>
             <RouterForm method="delete" className="d-flex justify-content-end">
               {/* <Form.Control /> */}

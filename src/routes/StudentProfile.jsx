@@ -52,7 +52,7 @@ export default function StudentProfile() {
                   />
                   <Nav.Item className="ms-auto">
                     <Link
-                      to={`/students/${student.id}/edit`}
+                      to={`/students/${profile.id}/edit`}
                       className="btn btn-light pt-1 pb-2"
                     >
                       <GearFill />
@@ -67,6 +67,7 @@ export default function StudentProfile() {
             <Row className="gy-4">
               <Col xs={12}>
                 <UsernameCard
+                  id={profile.id}
                   avatarUrl={student.avatarUrl}
                   firstName={student.firstName}
                   lastName={student.lastName}

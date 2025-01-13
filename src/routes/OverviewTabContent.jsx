@@ -17,7 +17,6 @@ export async function loader({ params }) {
 
 export default function OverviewTabContent() {
   const { student, profile } = useLoaderData();
-  console.log("OverviewTabContent", student, profile);
   return (
     <>
       <h5 className="mb-3">Biography</h5>

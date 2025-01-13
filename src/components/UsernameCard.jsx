@@ -12,8 +12,10 @@ import {
   Row,
 } from "react-bootstrap";
 import { PencilSquare } from "react-bootstrap-icons";
+import { Link } from "react-router-dom";
 
 export default function UsernameCard({
+  id,
   avatarUrl,
   firstName,
   lastName,
@@ -57,7 +59,9 @@ export default function UsernameCard({
               <span>{address}</span>
             </ListGroupItem>
             <ListGroupItem className="d-flex justify-content-between align-items-center">
-              <p className="fw-bold m-0">Class(es)</p>
+              <p className="fw-bold m-0">
+                {classes.length === 1 ? "Class" : "Classes"}
+              </p>
               <span>
                 {classes.map((c) => (
                   <Badge key={c} className="m-1">
@@ -67,13 +71,13 @@ export default function UsernameCard({
               </span>
             </ListGroupItem>
           </ListGroup>
-          <Button onClick={() => setModalShow(true)}>
+          <Link to={"/students/" + id + "/edit"} className="btn btn-primary">
             Edit <PencilSquare />
-          </Button>
-          <EditUsernameModal
+          </Link>
+          {/* <EditUsernameModal
             show={modalShow}
             onHide={() => setModalShow(false)}
-          />
+          /> */}
         </Stack>
       </Card.Body>
     </Card>
