@@ -4,6 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Error from "./components/pages/Error";
+import { DRIVE_EMBED_URL } from "./constants/common";
+import { AuthProvider } from "./context/AuthContext";
 import AcademicTabContent, {
   loader as academicLoader,
 } from "./routes/AcademicTabContent";
@@ -14,7 +16,9 @@ import ClassDetail from "./routes/ClassDetail";
 import Dashboard, { loader as dashboardLoader } from "./routes/Dashboard";
 import FeedbackTabContent from "./routes/FeedbackTabContent";
 import Login from "./routes/Login";
+import NewClass, { action as newClassAction } from "./routes/NewClass";
 import NewSession, { action as newSessionAction } from "./routes/NewSession";
+import NewStudent, { action as newStudentAction } from "./routes/NewStudent";
 import NotificationTabContent, {
   loader as notificationLoader,
 } from "./routes/NotificationTabContent";
@@ -27,8 +31,8 @@ import ScheduleTabContent, {
   loader as scheduleLoader,
 } from "./routes/ScheduleTabContent";
 import SessionTabContent, {
-  loader as sessionLoader,
   action as sessionAction,
+  loader as sessionLoader,
 } from "./routes/SessionTabContent";
 import Signup from "./routes/Signup";
 import StudentProfile, {
@@ -37,20 +41,14 @@ import StudentProfile, {
 import StudentTabContent, {
   loader as studentLoader,
 } from "./routes/StudentTabContent";
-import UpdateStudent, {
-  action as updateStudentAction,
-  loader as updateStudentLoader,
-} from "./routes/UpdateStudent";
-import { DRIVE_EMBED_URL } from "./constants/common";
-import { AuthProvider } from "./context/AuthContext";
-import AssignmentEditor from "./routes/AssignmentEditor";
-import NewClass, { action as newClassAction } from "./routes/NewClass";
-import NewStudent, { action as newStudentAction } from "./routes/NewStudent";
 import UpdateClass, {
   action as updateClassAction,
   loader as updateClassLoader,
 } from "./routes/UpdateClass";
-import NewStudent, { action as newStudentAction } from "./routes/NewStudent";
+import UpdateStudent, {
+  action as updateStudentAction,
+  loader as updateStudentLoader,
+} from "./routes/UpdateStudent";
 
 function App() {
   const router = createBrowserRouter([
