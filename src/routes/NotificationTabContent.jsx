@@ -1,26 +1,14 @@
-import { useState } from "react";
-import { EditorState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import { Card, Table, Row, Col, Button, Modal, Form } from "react-bootstrap";
-import { ChevronUp, ChevronDown, PencilSquare } from "react-bootstrap-icons";
-import { useLoaderData } from "react-router-dom";
-import { getClassId } from "../api/classes.api";
-import React from "react";
+import { AdvancedImage, placeholder, responsive } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
-import { auto } from "@cloudinary/url-gen/actions/resize";
-import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
-import { AdvancedImage } from "@cloudinary/react";
+import { EditorState } from "draft-js";
+import { useState } from "react";
+import { Button, Card, Col, Modal, Row, Table } from "react-bootstrap";
+import { ChevronDown, ChevronUp, PencilSquare } from "react-bootstrap-icons";
+import { Editor } from "react-draft-wysiwyg";
+import { useLoaderData } from "react-router-dom";
 
-// require("dotenv").config();
-import { config } from "dotenv";
-config();
-// import { v2 as cloudinary } from "cloudinary";
-
-// cloudinary.config({
-//   cloud_name: import.meta.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: import.meta.env.CLOUDINARY_API_KEY,
-//   api_secret: import.meta.env.CLOUDINARY_API_SECRET,
-// });
+import { getClassId } from "../api/classes.api";
+import CloudinaryUploadWidget from "../components/CloudinaryUploadWidget";
 
 export async function loader({ params }) {
   try {
@@ -53,6 +41,8 @@ export default function NotificationTabContent() {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+  const [publicId, setPublicId] = useState("");
+
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
   };
@@ -82,6 +72,8 @@ export default function NotificationTabContent() {
               show={showModal}
               handleClose={handleClose}
               handleSave={console.log}
+              publicId={publicId}
+              setPublicId={setPublicId}
             />
           </Card.ImgOverlay>
           <Card.Body>
@@ -135,15 +127,34 @@ export default function NotificationTabContent() {
   );
 }
 
-function UpdateWallpaperModal({ show, handleClose, handleSave }) {
-  const cld = new Cloudinary({
-    cloud: { cloudName: import.meta.env.CLOUDINARY_CLOUD_NAME },
-  });
-  const [imageUrl, setImageUrl] = useState("");
+function UpdateWallpaperModal({ show, handleClose, publicId, setPublicId }) {
+  // Configuration
+  const cloudName = "hzxyensd5";
+  const uploadPreset = "aoh4fpwm";
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleSave(imageUrl);
+  // Cloudinary configuration
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName,
+    },
+  });
+
+  // Upload Widget Configuration
+  const uwConfig = {
+    cloudName,
+    uploadPreset,
+    // Uncomment and modify as needed:
+    // cropping: true,
+    // showAdvancedOptions: true,
+    // sources: ['local', 'url'],
+    // multiple: false,
+    // folder: 'user_images',
+    // tags: ['users', 'profile'],
+    // context: { alt: 'user_uploaded' },
+    // clientAllowedFormats: ['images'],
+    // maxImageFileSize: 2000000,
+    // maxImageWidth: 2000,
+    // theme: 'purple',
   };
 
   const img = cld
@@ -155,7 +166,18 @@ function UpdateWallpaperModal({ show, handleClose, handleSave }) {
   // return <AdvancedImage cldImg={img} />;
   return (
     <Modal show={show} onHide={handleClose}>
-      <AdvancedImage cldImg={img} />
+      <Modal.Header closeButton>
+        <Modal.Title>Update Wallpaper Image</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
+        {/* Preview image  */}
+        <AdvancedImage
+          style={{ maxWidth: "100%" }}
+          cldImg={cld.image(publicId)}
+          plugins={[responsive(), placeholder()]}
+        />
+      </Modal.Body>
     </Modal>
     //   <Modal.Header closeButton>
     //     <Modal.Title>Update Wallpaper Image</Modal.Title>
