@@ -31,6 +31,7 @@ export async function loader() {
     };
   } catch (error) {
     console.log(error);
+    return null;
   }
 }
 

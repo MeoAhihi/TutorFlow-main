@@ -7,7 +7,7 @@ export async function action({ request }) {
   const formData = await request.formData();
   const newStudent = Object.fromEntries(formData);
   const student = await postStudent(newStudent);
-  console.log(student)
+  console.log(student);
   return redirect("/students/" + student.data.profile.id);
 }
 
