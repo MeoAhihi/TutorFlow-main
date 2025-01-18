@@ -48,14 +48,9 @@ import UpdateClass, {
   action as updateClassAction,
 } from "./routes/UpdateClass";
 import NewStudent, { action as newStudentAction } from "./routes/NewStudent";
-import AssignmentEditor from "./routes/AssignmentEditor";
 
 function App() {
   const router = createBrowserRouter([
-    {
-      path: "/text",
-      element: <AssignmentEditor />,
-    },
     {
       path: "/login",
       element: <Login />,
