@@ -10,7 +10,8 @@ import {
   YAxis,
   ResponsiveContainer,
 } from "recharts";
-import { getAttendances, getClassId } from "../api/classes.api";
+import { getClassId } from "../api/classes.api";
+import { getAttendances } from "../api/sessions.api";
 
 export async function loader({ params }) {
   try {

@@ -1,18 +1,13 @@
+import { useState } from "react";
 import Avatar from "react-avatar";
-import { Card, Row, Col } from "react-bootstrap";
-import { useLoaderData } from "react-router-dom";
-import { getClassId, getSessions } from "../api/classes.api";
+import { Button, Card, Col, Modal, Row, Table } from "react-bootstrap";
+import { PlusCircle } from "react-bootstrap-icons";
+import { Form, Link, redirect, useLoaderData } from "react-router-dom";
 
-function toTime(ms) {
-  const s = Math.floor(ms / 1000) - 31;
-  const seconds = ("0" + (s % 60)).slice(-2);
-  const m = Math.floor((s - seconds) / 60);
-  const minutes = ("0" + (m % 60)).slice(-2);
-  const hours = Math.floor((m - minutes) / 60);
-  return (
-    (hours ? hours + "h" : "") + (minutes ? minutes + "m" : "") + seconds + "s"
-  );
-}
+import { getClassId } from "../api/classes.api";
+import { endSession, getSessions, patchSession } from "../api/sessions.api";
+import { SessionModal } from "../components/SessionModal";
+import { toTime } from "../utils/formatDate";
 
 export async function loader({ params }) {
   try {
@@ -49,15 +44,42 @@ export async function loader({ params }) {
     };
   } catch (error) {
     console.log(error);
+    return null;
   }
+}
+
+export async function action({ request }) {
+  if (request.method === "PATCH") {
+    const formData = await request.formData();
+    const sessionData = Object.fromEntries(formData);
+
+    if (sessionData.endSessionId) {
+      await endSession(sessionData.endSessionId);
+      return null;
+    }
+
+    const Session = await patchSession(params.classId, sessionData);
+    return null;
+  }
+}
+
+export async function endSessionAction({ params }) {
+  await endSession(params.sessionId);
+  return redirect(`/classes/${params.classId}/sessions`);
 }
 
 export default function SessionTabContent() {
   const { thisMonthSessions, lastMonthSessions, earlierSessions, students } =
     useLoaderData();
+
   return (
     <Row className="justify-content-center">
       <Col xs={10}>
+        <Link to="new" className="btn btn-primary mb-4 pt-1 pb-2">
+          <PlusCircle className="me-2" />
+          Start Session
+        </Link>
+
         {thisMonthSessions.length +
           lastMonthSessions.length +
           earlierSessions.length ===
@@ -71,7 +93,11 @@ export default function SessionTabContent() {
             <h2>This Month</h2>
             <Row className="g-3 mb-4">
               {thisMonthSessions.map((session) => (
-                <SessionCard session={session} students={students} />
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  students={students}
+                />
               ))}
             </Row>
           </>
@@ -81,7 +107,11 @@ export default function SessionTabContent() {
             <h2>Last Month</h2>
             <Row className="g-3 mb-4">
               {lastMonthSessions.map((session) => (
-                <SessionCard session={session} students={students} />
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  students={students}
+                />
               ))}
             </Row>
           </>
@@ -91,7 +121,11 @@ export default function SessionTabContent() {
             <h2>Earlier</h2>
             <Row className="g-3 mb-4">
               {earlierSessions.map((session) => (
-                <SessionCard session={session} students={students} />
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  students={students}
+                />
               ))}
             </Row>
           </>
@@ -101,42 +135,55 @@ export default function SessionTabContent() {
   );
 }
 
-const SessionCard = ({ session, students }) => (
-  <Col xs={3} key={session.id}>
-    <Card>
-      <Card.Body>
-        <Card.Img src="/public/assets/education-material-icon-vector-illustration_1287271-41250.avif" />
-        <Card.Title className="mb-1">{session.title}</Card.Title>
-        <div className="d-flex justify-content-between">
-          <Card.Text className="text-muted font-weight-lighter small">
-            {new Date(session.createdAt).toLocaleString("en-VN", {
-              timeZone: "UTC",
-            })}
-          </Card.Text>
-          <Card.Text className="text-muted font-weight-lighter small">
-            {toTime(session.duration)}
-          </Card.Text>
-        </div>
-        <div className="d-flex justify-content-between">
-          <Card.Link>View detail</Card.Link>
-          <div>
-            {console.log(students)}
-            {students.map(({ student }) => (
-              <Avatar
-                key={student.id}
-                name={student.lastName}
-                src={student.avatarUrl}
-                size={35}
-                round
-                style={{
-                  margin: -5,
-                  boxShadow: "0px 3px 3px rgba(0,0,0,0.2)",
-                }}
-              />
-            ))}
+const SessionCard = ({ session, students }) => {
+  const handleViewDetail = () => {
+    handleOpen();
+  };
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+  const handleOpen = () => setShowModal(true);
+  return (
+    <Col xl={3} md={4} sm={6} xs={12} key={session.id}>
+      <Card>
+        <Card.Body>
+          <Card.Img src="/public/assets/education-material-icon-vector-illustration_1287271-41250.avif" />
+          <Card.Title className="mb-1">{session.title}</Card.Title>
+          <div className="d-flex justify-content-between">
+            <Card.Text className="text-muted font-weight-lighter small">
+              {new Date(session.createdAt).toLocaleString("en-VN", {
+                timeZone: "UTC",
+              })}
+            </Card.Text>
+            <Card.Text className="text-muted font-weight-lighter small">
+              {session.duration ? toTime(session.duration) : "Opening"}
+            </Card.Text>
           </div>
-        </div>
-      </Card.Body>
-    </Card>
-  </Col>
-);
+          <div className="d-flex justify-content-between">
+            <Button onClick={handleViewDetail}>View Detail</Button>
+            <div>
+              {students.map(({ student }) => (
+                <Avatar
+                  key={student.id}
+                  name={student.lastName}
+                  src={student.avatarUrl}
+                  size={35}
+                  round
+                  style={{
+                    margin: -5,
+                    boxShadow: "0px 3px 3px rgba(0,0,0,0.2)",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </Card.Body>
+
+        <SessionModal
+          show={showModal}
+          session={session}
+          handleClose={handleClose}
+        />
+      </Card>
+    </Col>
+  );
+};

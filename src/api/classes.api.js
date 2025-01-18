@@ -37,19 +37,8 @@ export const getSchedulesOffset = async (classId) => {
   return res;
 };
 
-export const getAttendances = async (classId) => {
-  const res = await restConnector().get(
-    "/sessions/attendances?classId=" + classId
-  );
-  return res;
-};
-
 export const getAssignments = async (classId) => {
   const res = await restConnector().get("/assignments?classId=" + classId);
   return res;
 };
 
-export const getSessions = async (classId) => {
-  const res = await restConnector().get("/sessions?classId=" + classId);
-  return res;
-};

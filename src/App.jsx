@@ -14,6 +14,7 @@ import ClassDetail from "./routes/ClassDetail";
 import Dashboard, { loader as dashboardLoader } from "./routes/Dashboard";
 import FeedbackTabContent from "./routes/FeedbackTabContent";
 import Login from "./routes/Login";
+import NewSession, { action as newSessionAction } from "./routes/NewSession";
 import NotificationTabContent, {
   loader as notificationLoader,
 } from "./routes/NotificationTabContent";
@@ -27,6 +28,7 @@ import ScheduleTabContent, {
 } from "./routes/ScheduleTabContent";
 import SessionTabContent, {
   loader as sessionLoader,
+  action as sessionAction,
 } from "./routes/SessionTabContent";
 import Signup from "./routes/Signup";
 import StudentProfile, {
@@ -36,19 +38,18 @@ import StudentTabContent, {
   loader as studentLoader,
 } from "./routes/StudentTabContent";
 import UpdateStudent, {
-  loader as updateStudentLoader,
   action as updateStudentAction,
+  loader as updateStudentLoader,
 } from "./routes/UpdateStudent";
-
 import { DRIVE_EMBED_URL } from "./constants/common";
 import { AuthProvider } from "./context/AuthContext";
-import NewClass, { action as newClassAction } from "./routes/NewClass";
-import UpdateClass, {
-  loader as updateClassLoader,
-  action as updateClassAction,
-} from "./routes/UpdateClass";
-import NewStudent, { action as newStudentAction } from "./routes/NewStudent";
 import AssignmentEditor from "./routes/AssignmentEditor";
+import NewClass, { action as newClassAction } from "./routes/NewClass";
+import NewStudent, { action as newStudentAction } from "./routes/NewStudent";
+import UpdateClass, {
+  action as updateClassAction,
+  loader as updateClassLoader,
+} from "./routes/UpdateClass";
 
 function App() {
   const router = createBrowserRouter([
@@ -94,27 +95,28 @@ function App() {
               element: <NotificationTabContent />,
             },
             {
-              path: "student",
+              path: "students",
               loader: studentLoader,
               element: <StudentTabContent />,
             },
             {
-              path: "schedule",
+              path: "schedules",
               loader: scheduleLoader,
               element: <ScheduleTabContent />,
             },
             {
-              path: "assignment",
+              path: "assignments",
               loader: assignmentLoader,
               element: <AssignmentTabContent />,
             },
             {
-              path: "session",
+              path: "sessions",
               loader: sessionLoader,
+              action: sessionAction,
               element: <SessionTabContent />,
             },
             {
-              path: "resource",
+              path: "resources",
               element: (
                 <iframe src={DRIVE_EMBED_URL} className="w-100 vh-100" />
               ),
@@ -131,6 +133,11 @@ function App() {
           path: "students/new",
           action: newStudentAction,
           element: <NewStudent />,
+        },
+        {
+          path: "/classes/:classId/sessions/new",
+          action: newSessionAction,
+          element: <NewSession />,
         },
         {
           path: "students/:studentId",

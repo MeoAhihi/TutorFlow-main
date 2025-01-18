@@ -11,15 +11,15 @@ export default function ClassDetail() {
       <Card.Body className="p-4">
         <Nav variant="tabs" defaultActiveKey="overview" className="mb-4">
           <NavItemLink to="overview" eventKey="overview" label="Overview" />
-          <NavItemLink to="student" eventKey="student" label="Student" />
-          <NavItemLink to="schedule" eventKey="schedule" label="Schedule" />
+          <NavItemLink to="students" eventKey="students" label="Students" />
+          <NavItemLink to="schedules" eventKey="schedules" label="Schedules" />
           <NavItemLink
-            to="assignment"
-            eventKey="assignment"
-            label="Assignment"
+            to="assignments"
+            eventKey="assignments"
+            label="Assignments"
           />
-          <NavItemLink to="session" eventKey="session" label="Session" />
-          <NavItemLink to="resource" eventKey="resource" label="Resource" />
+          <NavItemLink to="sessions" eventKey="sessions" label="Sessions" />
+          <NavItemLink to="resources" eventKey="resources" label="Resources" />
 
           <Nav.Item className="ms-auto">
             <Link className="btn btn-light pb-2" to="edit">
