@@ -1,44 +1,44 @@
 import restConnector from "../connectors/AxiosRestConnector";
 
 export const getClasses = async () => {
-  const res = await restConnector().get("/classes");
-  return res;
+  const response = await restConnector().get("/classes");
+  return response;
 };
 
 export const getClassId = async (id) => {
-  const res = await restConnector().get("/classes/" + id);
-  return res;
+  const response = await restConnector().get("/classes/" + id);
+  return response;
 };
 
 export const patchClass = async (id, data) => {
-  const res = await restConnector().patch("/classes/" + id, data);
-  return res;
+  const response = await restConnector().patch("/classes/" + id, data);
+  return response;
 };
 
 export const postClass = async (data) => {
-  const res = await restConnector().post("/classes", data);
-  return res;
+  const response = await restConnector().post("/classes", data);
+  return response;
 };
 
 export const deleteClass = async (id) => {
-  const res = await restConnector().delete("/classes/" + id);
-  return res;
+  const response = await restConnector().delete("/classes/" + id);
+  return response;
 };
 
 export const getSchedulesDefault = async (classId) => {
-  const res = await restConnector().get(
+  const response = await restConnector().get(
     "/schedules/default?classId=" + classId
   );
-  return res;
+  return response;
 };
 
 export const getSchedulesOffset = async (classId) => {
-  const res = await restConnector().get("/schedules/offset?classId=" + classId);
-  return res;
+  const response = await restConnector().get("/schedules/offset?classId=" + classId);
+  return response;
 };
 
 export const getAssignments = async (classId) => {
-  const res = await restConnector().get("/assignments?classId=" + classId);
-  return res;
+  const response = await restConnector().get("/assignments?classId=" + classId);
+  return response;
 };
 

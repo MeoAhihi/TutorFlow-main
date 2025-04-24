@@ -1,41 +1,41 @@
 import restConnector from "../connectors/AxiosRestConnector";
 
 export const postSession = async (classId, data) => {
-  const res = await restConnector().post("/sessions?classId=" + classId, data);
-  return res;
+  const response = await restConnector().post("/sessions?classId=" + classId, data);
+  return response;
 };
 
 export const getAttendances = async (classId) => {
-  const res = await restConnector().get(
+  const response = await restConnector().get(
     "/sessions/attendances?classId=" + classId
   );
-  return res;
+  return response;
 };
 
 export const getSessionId = async (id) => {
-  const res = await restConnector().get("/sessions/" + id);
-  return res;
+  const response = await restConnector().get("/sessions/" + id);
+  return response;
 };
 
 export const getSessions = async (classId) => {
-  const res = await restConnector().get("/sessions?classId=" + classId);
-  return res;
+  const response = await restConnector().get("/sessions?classId=" + classId);
+  return response;
 };
 
 export const endSession = async (id) => {
-  const res = await restConnector().patch("/sessions/" + id + "/end");
-  return res;
+  const response = await restConnector().patch("/sessions/" + id + "/end");
+  return response;
 };
 
 export const postAttendance = async (id, data) => {
-  const res = await restConnector().post(
+  const response = await restConnector().post(
     "/sessions/" + id + "/attendances",
     data
   );
-  return res;
+  return response;
 };
 
 export const patchSession = async (id, data) => {
-  const res = await restConnector().patch("/sessions/" + id, data);
-  return res;
+  const response = await restConnector().patch("/sessions/" + id, data);
+  return response;
 };

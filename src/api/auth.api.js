@@ -1,19 +1,19 @@
 import restConnector from "../connectors/AxiosRestConnector";
 
 export const login = async (email, password) => {
-  const res = await restConnector().post("/auth/login", {
+  const response = await restConnector().post("/auth/login", {
     email,
     password,
   });
-  return res;
+  return response;
 };
 
 export const register = async (email, password, firstName, lastName) => {
-  const res = await restConnector().post("/auth/register", {
+  const response = await restConnector().post("/auth/register", {
     email,
     password,
     firstName,
     lastName,
   });
-  return res;
+  return response;
 };

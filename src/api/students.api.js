@@ -1,26 +1,26 @@
 import restConnector from "../connectors/AxiosRestConnector";
 
 export const getStudents = async () => {
-  const res = await restConnector().get("/students");
-  return res;
+  const response = await restConnector().get("/students");
+  return response;
 };
 
 export const getStudentInfo = async (id) => {
-  const res = await restConnector().get("/students/" + id);
-  return res;
+  const response = await restConnector().get("/students/" + id);
+  return response;
 };
 
 export const postStudent = async (student) => {
-  const res = await restConnector().post("/students", student);
-  return res;
+  const response = await restConnector().post("/students", student);
+  return response;
 };
 
 export const patchStudent = async (id, student) => {
-  const res = await restConnector().patch("/students/" + id, student);
-  return res;
+  const response = await restConnector().patch("/students/" + id, student);
+  return response;
 };
 
 export const deleteStudent = async (id) => {
-  const res = await restConnector().delete("/students/" + id);
-  return res;
+  const response = await restConnector().delete("/students/" + id);
+  return response;
 };
